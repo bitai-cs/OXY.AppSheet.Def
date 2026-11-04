@@ -1,0 +1,27 @@
+Factura_ID,Obra_ID,Tipo,Concepto,Nro_Factura,Fecha_Emision,Plazo_Pago_Dias,Fecha_Vencimiento,Monto_Neto,IGV,Total,Doc_Factura,Estado,Motivo_Anulacion,Notificado_Vencida,Registrado_Por,Creado_En
+FAC-001,OBR-001,Adelanto,Adelanto 25%,F001-00141,2026-05-08,60,2026-07-07,36050.0,6489.0,42539.0,Facturas_Obra_Files/F001-00141.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-05-08 11:49:00
+FAC-002,OBR-002,Adelanto,Adelanto 30%,F001-00142,2026-05-15,30,2026-06-14,30390.0,5470.2,35860.2,Facturas_Obra_Files/F001-00142.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-05-15 11:11:00
+FAC-003,OBR-003,Adelanto,Adelanto 30%,F001-00143,2026-05-18,45,2026-07-02,13410.0,2413.8,15823.8,Facturas_Obra_Files/F001-00143.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-05-18 11:43:00
+FAC-004,OBR-004,Adelanto,Adelanto 25%,F001-00144,2026-05-30,30,2026-06-29,55075.0,9913.5,64988.5,Facturas_Obra_Files/F001-00144.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-05-30 11:12:00
+FAC-005,OBR-002,Valorizacion,Valorizacion N 1,F001-00145,2026-06-20,30,2026-07-20,40520.0,7293.6,47813.6,Facturas_Obra_Files/F001-00145.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-06-20 11:34:00
+FAC-006,OBR-005,Adelanto,Adelanto 20%,F001-00146,2026-06-28,15,2026-07-13,39580.0,7124.4,46704.4,Facturas_Obra_Files/F001-00146.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-06-28 11:44:00
+FAC-007,OBR-003,Liquidacion final,Liquidacion final,F001-00147,2026-07-03,45,2026-08-17,31290.0,5632.2,36922.2,Facturas_Obra_Files/F001-00147.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-07-03 11:01:00
+FAC-008,OBR-006,Adelanto,Adelanto 30%,F001-00148,2026-07-06,30,2026-08-05,35490.0,6388.2,41878.2,Facturas_Obra_Files/F001-00148.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-07-06 11:24:00
+FAC-009,OBR-001,Valorizacion,Valorizacion N 1,F001-00149,2026-07-10,60,2026-09-08,50470.0,9084.6,59554.6,Facturas_Obra_Files/F001-00149.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-07-10 11:47:00
+FAC-010,OBR-002,Liquidacion final,Liquidacion final,F001-00150,2026-07-12,30,2026-08-11,30390.0,5470.2,35860.2,Facturas_Obra_Files/F001-00150.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-07-12 11:32:00
+FAC-011,OBR-007,Adelanto,Adelanto 30%,F001-00151,2026-07-18,30,2026-08-17,41520.0,7473.6,48993.6,Facturas_Obra_Files/F001-00151.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-07-18 11:34:00
+FAC-012,OBR-008,Adelanto,Adelanto 20%,F001-00152,2026-07-27,60,2026-09-25,14560.0,2620.8,17180.8,Facturas_Obra_Files/F001-00152.pdf,Anulado,Obra cancelada antes de ejecutar el adelanto,No,rosa.quispe@oxy-demo.pe,2026-07-27 11:04:00
+FAC-013,OBR-005,Valorizacion,Valorizacion N 1,F001-00153,2026-08-05,15,2026-08-20,59370.0,10686.6,70056.6,Facturas_Obra_Files/F001-00153.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-08-05 11:27:00
+FAC-014,OBR-004,Valorizacion,Valorizacion N 1,F001-00154,2026-08-05,30,2026-09-04,77105.0,13878.9,90983.9,Facturas_Obra_Files/F001-00154.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-08-05 11:07:00
+FAC-015,OBR-009,Adelanto,Adelanto 30%,F001-00155,2026-08-22,45,2026-10-06,49200.0,8856.0,58056.0,Facturas_Obra_Files/F001-00155.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-08-22 11:35:00
+FAC-016,OBR-001,Liquidacion final,Liquidacion final,F001-00156,2026-08-28,60,2026-10-27,57680.0,10382.4,68062.4,Facturas_Obra_Files/F001-00156.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-08-28 11:31:00
+FAC-017,OBR-010,Adelanto,Adelanto 40%,F001-00157,2026-08-30,15,2026-09-14,34520.0,6213.6,40733.6,Facturas_Obra_Files/F001-00157.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-08-30 11:37:00
+FAC-018,OBR-006,Valorizacion,Valorizacion N 1,F001-00158,2026-09-01,30,2026-10-01,35490.0,6388.2,41878.2,Facturas_Obra_Files/F001-00158.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-09-01 11:21:00
+FAC-019,OBR-007,Valorizacion,Valorizacion N 1,F001-00159,2026-09-02,30,2026-10-02,48440.0,8719.2,57159.2,Facturas_Obra_Files/F001-00159.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-09-02 11:33:00
+FAC-020,OBR-005,Valorizacion,Valorizacion N 2,F001-00160,2026-09-10,15,2026-09-25,49475.0,8905.5,58380.5,Facturas_Obra_Files/F001-00160.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-09-10 11:40:00
+FAC-021,OBR-004,Valorizacion,Valorizacion N 2,F001-00161,2026-09-10,30,2026-10-10,55075.0,9913.5,64988.5,Facturas_Obra_Files/F001-00161.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-09-10 11:05:00
+FAC-022,OBR-010,Valorizacion,Valorizacion N 1,F001-00162,2026-09-20,15,2026-10-05,23732.5,4271.85,28004.35,Facturas_Obra_Files/F001-00162.pdf,Anulado,Monto errado; se reemite la factura,No,rosa.quispe@oxy-demo.pe,2026-09-20 11:38:00
+FAC-023,OBR-010,Valorizacion,Valorizacion N 1 (reemitida),F001-00163,2026-09-21,15,2026-10-06,21575.0,3883.5,25458.5,Facturas_Obra_Files/F001-00163.pdf,Vigente,,Si,rosa.quispe@oxy-demo.pe,2026-09-21 11:13:00
+FAC-024,OBR-005,Valorizacion,Valorizacion N 3,F001-00164,2026-10-01,15,2026-10-16,29685.0,5343.3,35028.3,Facturas_Obra_Files/F001-00164.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-10-01 11:17:00
+FAC-025,OBR-009,Valorizacion,Valorizacion N 1,F001-00165,2026-10-01,45,2026-11-15,41000.0,7380.0,48380.0,Facturas_Obra_Files/F001-00165.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-10-01 11:35:00
+FAC-026,OBR-011,Adelanto,Adelanto 30%,F001-00166,2026-10-07,15,2026-10-22,23010.0,4141.8,27151.8,Facturas_Obra_Files/F001-00166.pdf,Vigente,,No,rosa.quispe@oxy-demo.pe,2026-10-07 11:34:00

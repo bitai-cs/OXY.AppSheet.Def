@@ -1,0 +1,13 @@
+KPI,Sentido,Umbral_Ambar,Umbral_Rojo,Descripcion
+CONSUMO_PLAN_PCT,Menor_Mejor,0.9,1.0,Consumo del costo planificado (0.90 = 90%)
+CONSUMO_MENOS_AVANCE_PP,Menor_Mejor,10.0,20.0,Puntos porcentuales de consumo por encima del avance
+MARGEN_CAIDA_VS_PLAN_PP,Menor_Mejor,5.0,10.0,Puntos porcentuales que cae el margen real parcial frente al planificado
+CPI,Mayor_Mejor,0.95,0.85,Indice de desempeno de costo
+DIAS_SIN_GASTOS,Menor_Mejor,7.0,14.0,Obra en ejecucion sin gastos ni horas: alerta a mas de 7 dias (definido por el cliente)
+DIAS_SIN_AVANCE,Menor_Mejor,2.0,6.0,"Obra en ejecucion sin avance registrado. El avance es DIARIO: alerta desde 3 dias (ambar si > 2, rojo si > 6). Confirmado por el usuario"
+DIAS_ATRASO,Menor_Mejor,0.0,7.0,Dias sobre la fecha estimada de fin
+PCT_SIN_COMPROBANTE_30D,Menor_Mejor,0.2,0.35,% del costo sin comprobante en 30 dias (excluye depreciacion)
+HORAS_PENDIENTES_HORAS,Menor_Mejor,48.0,120.0,Horas transcurridas sin aprobar
+DIAS_FACTURA_VENCIDA,Menor_Mejor,0.0,30.0,Dias de vencimiento de una factura con saldo
+REZAGO_FACTURACION_PP,Menor_Mejor,15.0,30.0,"EJEMPLO nuevo: avance fisico menos % facturado, en puntos porcentuales"
+DIAS_PROFORMA_SIN_RESPUESTA,Menor_Mejor,7.0,15.0,Proforma enviada sin respuesta

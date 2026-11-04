@@ -1,0 +1,11 @@
+Job_ID,Descripcion,Programacion,Ultima_Ejecucion,Ultimo_Resultado,Activo
+J01,Pulso horario global,"Cada hora :05, 07-19 h, lun-sab",2026-10-10 19:05:00,OK: 1 fila en Snap_Global_Hora,True
+J03,Alertas del dia,Diario 07:15,2026-10-11 07:15:00,OK: 2 alertas nuevas,True
+J12,Facturas vencidas y por vencer,Diario 07:20,2026-10-11 07:20:00,OK: 1 factura vencida notificada,True
+J04,Briefing matutino,Diario 07:30,2026-10-11 07:30:00,OK: briefing enviado a 5 usuarios,True
+J06,Snapshot por obra,Cada hora 07-19 h y 23:30,2026-10-11 23:30:00,"OK: 6 obras activas, filas del dia actualizadas",True
+J07,Snapshot global del dia,Cada hora 07-19 h y 23:45,2026-10-11 23:45:00,OK: fila del dia actualizada,True
+J08,Costo por tipo semanal,Domingo 23:50,2026-10-11 23:50:00,OK: 53 filas,True
+J09,Resumen semanal,Lunes 07:00,2026-10-05 07:00:00,OK: resumen semanal enviado a Gerencia,True
+J10,Resumen mensual,Dia 1 07:00,2026-10-01 07:00:00,OK: cierre de septiembre enviado,True
+J11,Mantenimiento y purga,Diario 03:00,2026-10-11 03:00:00,OK: sin registros que purgar,True
