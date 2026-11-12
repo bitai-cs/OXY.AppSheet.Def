@@ -21,9 +21,12 @@ Solo se pueden crear los siguientes tipos de archivo en la raíz del directorio 
 | Pendientes | `Pendientes_vX.md` | Tareas pendientes y decisiones abiertas. |
 | Componentes comunes | `OXY_AppSheet_Componentes_Comunes_vX.md` | Convenciones, expresiones reutilizables, plantillas de ficha. |
 | Leeme | `Leeme_vX.md` | Índice del directorio y reglas de lectura. |
+| Conexión a la fuente de datos | `OXYData_URL.txt` | Texto plano con la URL del Google Sheet `OXYData` (una sola línea). No es un documento de especificación: no se versiona. Es la referencia que usan las personas y los agentes IA para localizar la fuente oficial de datos. |
 | Constitución | `CONSTITUTION.md` | Este documento (sin versión). |
 
 No se crean otros archivos de especificación fuera de esta lista. Si se necesita un nuevo tipo, se agrega primero aquí.
+
+La URL de `OXYData` vive únicamente en `OXYData_URL.txt`; esta constitución no la repite.
 
 ## 3. Numeración de versiones
 
@@ -40,17 +43,18 @@ No se crean otros archivos de especificación fuera de esta lista. Si se necesit
 3. **Respaldo previo.** Antes de cualquier cambio de estructura o carga masiva se copia `OXYData` con el nombre `OXYData_aaaammdd_hhmm`.
 4. **Versiones anteriores.** Las versiones viejas de los documentos se mueven a la carpeta `deprecated`. No se borran; no se leen ni se tocan salvo para consulta.
 5. **Sin citas a versiones.** Los documentos no mencionan números de versión de otros archivos. Se citan por nombre sin versión (ej. `OXY_DataModel_Especificacion`).
-6. **Fuente de datos.** Las referencias a datos se hacen a `OXYData`, que es la fuente oficial. No se cita por versión.
+6. **Fuente de datos.** Las referencias a datos se hacen a `OXYData`, que es la fuente oficial. No se cita por versión. La URL del Sheet está en `OXYData_URL.txt`.
 
 ## 5. Referencias permitidas
 
 Un documento puede referenciar:
 
 1. **Otros documentos por nombre, sin versión.** Ejemplo: `OXY_AppSheet_Arquitectura_y_Seguridad`, `OXY_DataModel_Especificacion`, `OXY_Propuesta_Dashboard_Indicadores`.
-2. **La fuente de datos.** `OXYData` (Google Sheet), por su nombre, sin versión.
+2. **La fuente de datos.** `OXYData` (Google Sheet), por su nombre, sin versión. Su URL está en `OXYData_URL.txt`; la constitución no la repite.
 3. **Tablas y columnas del modelo de datos.** Por su nombre exacto del Sheet.
 4. **Decisiones y validaciones.** Por su ID (`D01`, `V04`, `DA-03`, etc.), que son estables entre versiones.
 5. **Apps y roles.** Por su nombre exacto (`OXY Master`, `Super`, `Administracion`, etc.).
+6. **La ubicación de la fuente de datos.** `OXYData_URL.txt`, por su nombre.
 
 Un documento NO puede referenciar:
 
@@ -73,6 +77,7 @@ Un documento NO puede referenciar:
 2. Actualizar el contenido sin mencionar la versión dentro del texto.
 3. Registrar el cambio en el historial.
 4. Si el cambio afecta a otros documentos, actualizarlos también y registrar cada uno en el historial.
+5. **Diccionario de estructura.** Todo cambio en `OXYData` que cree, renombre o elimine una tabla o columna se refleja en la pestaña `_Diccionario` de `OXYData` (columnas: Tabla, Columna, Tipo AppSheet, Clave, Requerido, Virtual). El `_Diccionario` registra solo la estructura; la configuración de cada columna (`Show?`, `Editable?`, valor inicial, `Valid if` y fórmulas) va en la especificación de la app.
 
 ## 8. Subcarpeta `simulacion-graficos`
 
@@ -96,3 +101,9 @@ Un documento NO puede referenciar:
 4. No se versiona como documento de especificación ni sigue el patrón de nombres.
 5. Su contenido es descartable: puede borrarse en cualquier momento sin afectar la solución.
 6. No se registra en `OXY_AppSheet_Historial_de_Cambios`.
+
+## 11. Archivo `OXYData_URL.txt`
+
+1. Es obligatorio para trabajar con `OXYData`: sin su URL no se puede abrir la fuente de datos.
+2. Si el archivo no existe, el usuario lo crea antes de continuar con cualquier comando o petición.
+3. Ningún agente IA lo crea por su cuenta; si falta, el agente IA detiene el trabajo y pide al usuario que lo cree.
