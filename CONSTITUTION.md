@@ -19,8 +19,6 @@ Solo se pueden crear los siguientes tipos de archivo en la raíz del directorio 
 | Acciones y bots (legado) | `OXY_AppSheet_Acciones_y_Bots_vX.md` | Definición antigua; solo referencia, no se actualiza. |
 | Historial de cambios | `OXY_AppSheet_Historial_de_Cambios_vX.md` | Historial único de todos los documentos. |
 | Pendientes | `Pendientes_vX.md` | Tareas pendientes y decisiones abiertas. |
-| Componentes comunes | `OXY_AppSheet_Componentes_Comunes_vX.md` | Convenciones, expresiones reutilizables, plantillas de ficha. |
-| Leeme | `Leeme_vX.md` | Índice del directorio y reglas de lectura. |
 | Conexión a la fuente de datos | `OXYData_URL.txt` | Texto plano con la URL del Google Sheet `OXYData` (una sola línea). No es un documento de especificación: no se versiona. Es la referencia que usan las personas y los agentes IA para localizar la fuente oficial de datos. |
 | Constitución | `CONSTITUTION.md` | Este documento (sin versión). |
 
