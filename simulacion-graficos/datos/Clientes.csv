@@ -1,6 +1,0 @@
-Cliente_ID,RUC,Razon_Social,Nombre_Corto,Direccion,Plazo_Pago_Dias,Activo
-CLI-001,20999990011,Minera Andes Norte S.A.C.,Andes,"Av. Industrial 1200, San Isidro, Lima",30,True
-CLI-002,20999990022,Industrias Pacifico S.A.,Pacifico,"Av. Argentina 3450, Callao",30,True
-CLI-003,20999990033,Agroexportadora Valle Verde S.A.C.,AgroExpo,"Panamericana Sur Km 303, Ica",15,True
-CLI-004,20999990044,Quimica del Sur S.A.,Sur Quim.,Parque Industrial Arequipa Mz B Lt 4,60,True
-CLI-005,20999990055,Constructora Horizonte S.A.C.,Horizonte,"Av. Los Alamos 450, Lurin, Lima",45,True
