@@ -1,7 +1,7 @@
 # OXY Solution — Pendientes
 
 Fecha de este corte: 12 de noviembre de 2026.
-Estado de los documentos al momento del corte: `OXY_App_Proformas_Especificacion_v11`, `OXY_DataModel_Especificacion_v18`, `OXY_AppSheet_Arquitectura_y_Seguridad_v8`, `OXY_AppSheet_Historial_de_Cambios_v24`, `OXY_Propuesta_Dashboard_Indicadores_v5`. Los datos están en `OXYData` (último respaldo: `OXYData_20261014_2206`).
+Estado de los documentos al momento del corte: `OXY_App_Proformas_Especificacion`, `OXY_DataModel_Especificacion`, `OXY_AppSheet_Arquitectura_y_Seguridad`, `OXY_AppSheet_Historial_de_Cambios`, `OXY_Propuesta_Dashboard_Indicadores`. Los datos están en `OXYData` (último respaldo: `OXYData_20261014_2206`).
 
 Cada pendiente dice qué es, por qué importa, cómo se retoma y qué cierra el pendiente.
 
@@ -11,13 +11,12 @@ Cada pendiente dice qué es, por qué importa, cómo se retoma y qué cierra el 
 
 **Qué es.** `OXY_Propuesta_Dashboard_Indicadores.md` todavía menciona versiones de otros archivos (según lo que quedó pendiente en la revisión anterior, por ejemplo nombres de archivo con número de versión o referencias al modelo de datos y al libro de datos con su número de versión). Los otros dos documentos ya se limpiaron: el instructivo solo describe lo vigente, y los cambios van únicamente en el historial.
 
-**Por qué importa.** Cada vez que cambia una versión, esas citas quedan desactualizadas y obligan a corregir el Dashboard a mano.
+**Por qué importa.** Esas citas ya no corresponden al esquema de nombres del repositorio y obligan a corregir el Dashboard a mano.
 
 **Cómo se retoma.**
 1. Buscar en el documento menciones de `_v` seguido de número, de `OXY_Datos`, `DataModel_v` y de las palabras "versión" o "v" + número.
 2. Reemplazarlas por el nombre del documento sin versión (por ejemplo `OXY_DataModel_Especificacion`) o por una referencia a `OXYData`, que es la fuente oficial de los datos.
-3. Al guardar el resultado, el archivo lleva su propia versión en el nombre (regla del proyecto).
-4. Revisar de paso que las columnas y los nombres que el Dashboard cita sigan existiendo tras los cambios de proformas (se quitó `Revision_Nro` y el estado `Reemplazada`; se agregó el estado `Z-Eliminada`).
+3. Revisar de paso que las columnas y los nombres que el Dashboard cita sigan existiendo tras los cambios de proformas (se quitó `Revision_Nro` y el estado `Reemplazada`; se agregó el estado `Z-Eliminada`).
 
 **Cierra cuando.** El documento no contiene ninguna cita a versiones de otros archivos y sus referencias a proformas coinciden con el modelo de datos vigente.
 
@@ -65,52 +64,48 @@ Cada pendiente dice qué es, por qué importa, cómo se retoma y qué cierra el 
 
 ## 4. Otros pendientes anotados durante el trabajo
 
-### 4.1 Mover los documentos viejos a la carpeta `deprecated`
-
-Quedan en la carpeta `appsheet-def` las versiones anteriores del instructivo y del historial (`OXY_AppSheet_Acciones_y_Bots_v6`, `_v7` y los historiales v1 y v2), además de versiones anteriores del modelo de datos. Las debes pasar tú a `deprecated`; yo no leo ni toco esa carpeta.
-
-### 4.2 Fórmulas de las columnas virtuales de `Obras`
+### 4.1 Fórmulas de las columnas virtuales de `Obras`
 
 La sección 6.1 del instructivo lista las 25 columnas virtuales de `Obras` solo con su nombre; las fórmulas ya no viven en `_Diccionario` (que ahora solo lista la estructura); están en `_Diccionario_Legado` solo para consulta y vivirán en la especificación de cada app. Al construir las virtuales en el editor se copian de la especificación de la app. Si se quiere que el instructivo sea autosuficiente, habría que pasar cada fórmula a un bloque de columna (`App formula`).
 
-### 4.3 Dos textos propuestos en 7.1 que conviene confirmar
+### 4.2 Dos textos propuestos en 7.1 que conviene confirmar
 
 - `Monto_IGV`: el texto de `Invalid value error` ("El IGV no coincide con el calculado sobre el monto base. Revise exoneraciones o redondeos.") lo redacté yo; antes el instructivo solo decía "mensaje de advertencia".
 - `Tipo_Comprobante`: agregué una expresión opcional para el valor inicial (`Boleta` en tipos externos, `Sin comprobante` en tipos de origen `Interno manual`) además de la regla en texto.
 
-### 4.4 Paso condicional del correo de cobranza (LOG-B01, paso 2)
+### 4.3 Paso condicional del correo de cobranza (LOG-B01, paso 2)
 
 Al reestructurar escribí la condición del paso (`AND([Tipo_Evento]="COBRANZA_COMPLETA",ISNOTBLANK(LOOKUP("OXY","Compania","Compania_ID","Emails_Cobranza")))`). Antes la regla estaba solo en prosa. Se valida junto con V22.
 
-### 4.5 Construcción en AppSheet
+### 4.4 Construcción en AppSheet
 
 Todo el instructivo está listo pero ninguna acción, bot ni columna se ha construido aún en el editor. El orden de construcción está en la sección 4 del instructivo (inventario) y cada sección 5 a 13 trae su lista de preparación y sus criterios de salida.
 
-### 4.6 Completar los datos de OXY en `Compania`
+### 4.5 Completar los datos de OXY en `Compania`
 
 La fila de `Compania` quedó con `COMPLETAR` en los textos (`Web` y `Emails_Cobranza` vacías). OXY debe escribir los datos reales: nombre comercial, razón social, RUC, dirección fiscal, teléfono, correo, web si aplica, condiciones comerciales, cuentas bancarias, nombre de firma y los correos del aviso de cobranza.
 
-### 4.7 Plantilla de Google Docs de la proforma
+### 4.6 Plantilla de Google Docs de la proforma
 
 La plantilla `Plantilla_Demo` ya está en Drive. Falta renombrarla o copiarla como `Plantilla_Proforma`, revisar que "PROFORMA N°" no haya perdido el salto de línea y decidir si lleva logo (las imágenes necesitan URL pública). En V06 y V11 se prueba que AppSheet lea las marcas: `Start`/`End` en la fila de conceptos, `TEXT(...)` y `Related ...`. Opcionales: total en letras ("SON: ...") y unidad/cantidad por concepto.
 
-### 4.8 Fecha_Vigencia vacía en borradores de demostración
+### 4.7 Fecha_Vigencia vacía en borradores de demostración
 
 `PRF-019`, `PRF-022` y `PRF-023` (Borrador) no tienen `Fecha_Vigencia`; como ahora es requerida y `A_Enviar` la exige, hay que llenarla antes de probarlos.
 
-### 4.9 Barra invertida y comillas en `Numero`
+### 4.8 Barra invertida y comillas en `Numero`
 
 La validación rechaza `/ : * ? < > |`. La barra invertida y las comillas dobles no se añadieron porque no está confirmado cómo escribirlas en una fórmula de AppSheet; se prueban en V04.
 
-### 4.10 Proforma sin PDF válido
+### 4.9 Proforma sin PDF válido
 
 Mientras la proforma es `Borrador` o `Enviada`, el PDF se corrige pulsando `A_Generar_PDF`. Solo en `Aceptada`, `Rechazada` o `Vencida` hay que corregir `Doc_Proforma` a mano en `OXYData`. Con la condición de `A_Enviar` esto no debería ocurrir; la lista `S_Proformas_Sin_PDF` lo detecta si pasa.
 
-### 4.11 Construir `Compania` en AppSheet
+### 4.10 Construir `Compania` en AppSheet
 
 Agregar la tabla `Compania` desde `OXYData` con solo *Updates*; en `Configuracion` regenerar la estructura y confirmar que `Valor` es Decimal; cambiar las fórmulas de las diez columnas virtuales de `Proformas` y las de LOG-B01 (paso 2). Se valida en V24.
 
-### 4.12 Filtro de seguridad mínimo por tabla (diferido)
+### 4.11 Filtro de seguridad mínimo por tabla (diferido)
 
 **Qué es.** Una condición única, igual para todas las tablas de una app, que se pega en *Data → Tables → tabla → Security filter* y que solo envía filas al dispositivo si quien abre la app está en `Trabajadores`, está activo y tiene un rol permitido en esa app. No filtra por obra ni por dueño del registro. Forma general (la lista de roles cambia por app):
 
@@ -141,7 +136,7 @@ AND(LOOKUP(USEREMAIL(),"Trabajadores","Email","Activo"),IN(LOOKUP(USEREMAIL(),"T
 
 **Cierra cuando.** Cada tabla de cada app tiene el filtro (o se decide por escrito mantenerlo diferido) y las dos pruebas del paso 2 dieron el resultado esperado.
 
-### 4.13 Alinear el modelo de datos y `OXYData` con la nueva estructura de documentos
+### 4.12 Alinear el modelo de datos y `OXYData` con la nueva estructura de documentos
 
 Quedan para una sola pasada, con respaldo previo de `OXYData`, cuando estén escritas las especificaciones de Gestión, Campo, Master y Dashboard:
 
@@ -150,7 +145,7 @@ Quedan para una sola pasada, con respaldo previo de `OXYData`, cuando estén esc
 3. Pasar de tres a cinco apps el texto de `_Leeme` y `_Reglas`.
 4. Eliminar `_Diccionario_Legado` cuando todas las especificaciones estén completas.
 
-### 4.14 Copia de planificación y conceptos de proforma
+### 4.13 Copia de planificación y conceptos de proforma
 
 **Qué es.** Nueva acción `A_Copiar_Planificacion_Conceptos` (PRO-A13) con tabla de control `Control_Copias` y bot `B_Copiar_Lineas` (PRO-B05). Copia líneas de `Proforma_Conceptos` y `Proforma_Planificacion` desde una proforma origen (`Copiar_Desde_ID`) hacia la proforma destino en `Borrador`.
 
@@ -158,12 +153,12 @@ Quedan para una sola pasada, con respaldo previo de `OXYData`, cuando estén esc
 1. Respaldar `OXYData` (`OXYData_aaaammdd_hhmm`).
 2. Agregar columna `Copiar_Desde_ID` a `Proformas` en `OXYData` y crear tabla `Control_Copias` con la fila `COPIAS` (`Estado = "Libre"`).
 3. Actualizar `_Diccionario` de `OXYData` (solo estructura: Tabla, Columna, Tipo AppSheet, Clave, Requerido, Virtual).
-4. Escribir los cambios en `OXY_App_Proformas_Especificacion` (v11), `OXY_DataModel_Especificacion` (v18), `OXY_AppSheet_Arquitectura_y_Seguridad` (v8), `Pendientes` (v9).
-5. Registrar todo en `OXY_AppSheet_Historial_de_Cambios` (v24).
+4. Escribir los cambios en `OXY_App_Proformas_Especificacion`, `OXY_DataModel_Especificacion`, `OXY_AppSheet_Arquitectura_y_Seguridad` y `Pendientes`.
+5. Registrar todo en `OXY_AppSheet_Historial_de_Cambios`.
 6. Construir en el editor: tabla `Control_Copias`, acciones PRO-A13 a PRO-A17, bot PRO-B05, slice `S_Control_Copias_En_Proceso`.
 7. Probar con PR-18 a PR-21.
 
-**Cierra cuando.** Las pruebas PR-18 a PR-21 pasaron y el historial v24 está registrado.
+**Cierra cuando.** Las pruebas PR-18 a PR-21 pasaron y el cambio está registrado en el historial.
 
 ---
 
@@ -171,5 +166,5 @@ Quedan para una sola pasada, con respaldo previo de `OXYData`, cuando estén esc
 
 1. V15 (confirmar rótulos del editor) y corregir el instructivo si hace falta.
 2. Cerrar D01–D07 con quienes corresponde, para no construir algo que luego cambie.
-3. Limpiar el Dashboard (pendiente 1) y completar los datos de OXY (4.6).
+3. Limpiar el Dashboard (pendiente 1) y completar los datos de OXY (4.5).
 4. Construir sección por sección, cerrando las validaciones V que cada sección pide en sus criterios de salida.

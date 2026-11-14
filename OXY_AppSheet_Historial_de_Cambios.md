@@ -4,29 +4,56 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 ---
 
+## El repositorio pasa a control de versiones con Git — 13 de noviembre de 2026
+
+**Motivo:** los nombres de archivo ya no llevan número de versión; Git guarda el historial de cada archivo. La carpeta de versiones anteriores se elimina del repositorio y el historial sigue siendo la única fuente de resumen de cambios.
+
+| Dónde | Cambio |
+|---|---|
+| `CONSTITUTION.md` | Se elimina la numeración de versiones y la carpeta de versiones anteriores; los nombres de archivo no llevan sufijo de versión |
+| Documentos de especificación | Se les quitó el sufijo de versión al nombre: arquitectura y seguridad, modelo de datos, dashboard e indicadores, proforma, pendientes y este historial |
+| `OXY_AppSheet_Acciones_y_Bots` | No cambia; es el instructivo histórico de solo referencia y conserva su nombre |
+| Carpeta de versiones anteriores | Eliminada del repositorio |
+
+---
+
+## Aplicación en `OXYData` de la copia de planificación y conceptos — 14 de noviembre de 2026
+
+**Motivo:** la entrada del 12 de noviembre de 2026 registró el cambio de estructura de `OXYData` (`Control_Copias` y `Proformas.Copiar_Desde_ID`) pero el Sheet no lo tenía; solo estaban actualizados los documentos. Se aplicó y verificó.
+
+| Dónde | Cambio |
+|---|---|
+| `OXYData` · respaldo previo | Copia `OXYData_20261114_0239` en la carpeta de respaldos |
+| `OXYData` · `Control_Copias` | Pestaña nueva con `Control_ID`, `Proforma_Destino_ID`, `Proforma_Origen_ID`, `Estado`, `Creado_En` y la fila `COPIAS` con `Estado = "Libre"` |
+| `OXYData` · `Proformas` | Columna `Copiar_Desde_ID` agregada al final (columna Y), vacía |
+| `OXYData` · `_Diccionario` | 6 filas nuevas: 5 de `Control_Copias` y `Proformas.Copiar_Desde_ID` (después de `Doc_Proforma_Personalizado`) |
+| Este historial | Entrada nueva |
+
+---
+
 ## Copia de planificación y conceptos de proforma — 12 de noviembre de 2026
 
 **Motivo:** agregar la acción "Copiar planificación y conceptos" a OXY Proformas, que copie líneas de `Proforma_Conceptos` y `Proforma_Planificacion` desde una proforma origen hacia la proforma que ejecuta la acción.
 
 | Dónde | Cambio |
 |---|---|
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 1.3 | Nota de que la copia de conceptos y planificación es independiente de la relación previa (`Proforma_Previa_ID` / `Tipo_Relacion`) |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 3.1 | Tabla `Control_Copias` con permisos L·I·A |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 3.2 | Paso 5: crear la fila `COPIAS` de `Control_Copias` con `Estado = "Libre"` |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 3.3 | Columna `Copiar_Desde_ID` en `Proformas`; columnas de `Control_Copias`; acciones auxiliares de copia |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 3.4 | Slice `S_Control_Copias_En_Proceso` |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 3.5 | Acciones de sistema de `Control_Copias` |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 5 | Acciones PRO-A13 a PRO-A17; bot PRO-B05 |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 10 | Pruebas PR-18 a PR-21 |
-| `OXY_App_Proformas_Especificacion` (v10 → v11), 12 | Pendientes P-03, P-04, P-05 decididos (agregar, solo Borrador, conserva Orden) |
-| `OXY_DataModel_Especificacion` (v17 → v18) | Tabla `Control_Copias` en mapa de tablas y sección 8; columna `Copiar_Desde_ID` en `Proformas`; nota de copia en `Proformas`, `Proforma_Conceptos` y `Proforma_Planificacion`; `_Diccionario` actualizado (solo estructura) |
-| `OXY_AppSheet_Arquitectura_y_Seguridad` (v7 → v8), 1 | Se remueve la fila de `OXY_AppSheet_Componentes_Comunes` |
-| `OXY_AppSheet_Arquitectura_y_Seguridad` (v7 → v8), 6 | `Control_Copias` en matriz de tablas por app (solo Proformas, L·I·A) |
-| `OXY_AppSheet_Arquitectura_y_Seguridad` (v7 → v8), 7.2 | Grupo de componentes de copia (PRO-A13 a PRO-A17, PRO-B05) en Proformas |
-| `OXY_AppSheet_Arquitectura_y_Seguridad` (v7 → v8), 11 | DA-10: tabla de control de una fila + bot con dos pasos "Execute an action on a set of rows"; solo en Borrador, agrega líneas, conserva Orden |
-| `Pendientes` (v8 → v9) | 4.14: pendiente de copia de planificación y conceptos |
+| `OXY_App_Proformas_Especificacion`, 1.3 | Nota de que la copia de conceptos y planificación es independiente de la relación previa (`Proforma_Previa_ID` / `Tipo_Relacion`) |
+| `OXY_App_Proformas_Especificacion`, 3.1 | Tabla `Control_Copias` con permisos L·I·A |
+| `OXY_App_Proformas_Especificacion`, 3.2 | Paso 5: crear la fila `COPIAS` de `Control_Copias` con `Estado = "Libre"` |
+| `OXY_App_Proformas_Especificacion`, 3.3 | Columna `Copiar_Desde_ID` en `Proformas`; columnas de `Control_Copias`; acciones auxiliares de copia |
+| `OXY_App_Proformas_Especificacion`, 3.4 | Slice `S_Control_Copias_En_Proceso` |
+| `OXY_App_Proformas_Especificacion`, 3.5 | Acciones de sistema de `Control_Copias` |
+| `OXY_App_Proformas_Especificacion`, 5 | Acciones PRO-A13 a PRO-A17; bot PRO-B05 |
+| `OXY_App_Proformas_Especificacion`, 10 | Pruebas PR-18 a PR-21 |
+| `OXY_App_Proformas_Especificacion`, 12 | Pendientes P-03, P-04, P-05 decididos (agregar, solo Borrador, conserva Orden) |
+| `OXY_DataModel_Especificacion` | Tabla `Control_Copias` en mapa de tablas y sección 8; columna `Copiar_Desde_ID` en `Proformas`; nota de copia en `Proformas`, `Proforma_Conceptos` y `Proforma_Planificacion`; `_Diccionario` actualizado (solo estructura) |
+| `OXY_AppSheet_Arquitectura_y_Seguridad`, 1 | Se remueve la fila de `OXY_AppSheet_Componentes_Comunes` |
+| `OXY_AppSheet_Arquitectura_y_Seguridad`, 6 | `Control_Copias` en matriz de tablas por app (solo Proformas, L·I·A) |
+| `OXY_AppSheet_Arquitectura_y_Seguridad`, 7.2 | Grupo de componentes de copia (PRO-A13 a PRO-A17, PRO-B05) en Proformas |
+| `OXY_AppSheet_Arquitectura_y_Seguridad`, 11 | DA-10: tabla de control de una fila + bot con dos pasos "Execute an action on a set of rows"; solo en Borrador, agrega líneas, conserva Orden |
+| `Pendientes` | 4.14: pendiente de copia de planificación y conceptos |
 | `OXYData` · `_Diccionario` | Respaldo previo. Filas de `Control_Copias` (5 columnas) y `Proformas.Copiar_Desde_ID` (1 columna) |
-| Este historial | Entrada nueva; pasa de v23 a v24 y la v23 pasa a `deprecated` |
+| Este historial | Entrada nueva |
 
 ---
 
@@ -36,11 +63,11 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 | Dónde | Cambio |
 |---|---|
-| `CONSTITUTION.md` (sin versión), 2 | Nuevo tipo de archivo `OXYData_URL.txt` y nota de que la URL no se repite en la constitución |
-| `CONSTITUTION.md` (sin versión), 4.6, 5.2 y 5.6 | La URL de `OXYData` está en `OXYData_URL.txt` |
-| `CONSTITUTION.md` (sin versión), 7.5 | Nueva regla: todo cambio que cree, renombre o elimine una tabla o columna se refleja en `_Diccionario` (solo estructura); la configuración de columnas va en la especificación de la app |
-| `CONSTITUTION.md` (sin versión), 11 | Nueva sección: si `OXYData_URL.txt` no existe, el usuario lo crea antes de continuar con cualquier comando o petición |
-| Este historial | Entrada nueva; pasa de v22 a v23 y la v22 pasa a `deprecated` |
+| `CONSTITUTION.md`, 2 | Nuevo tipo de archivo `OXYData_URL.txt` y nota de que la URL no se repite en la constitución |
+| `CONSTITUTION.md`, 3.5, 4.2 y 4.6 | La URL de `OXYData` está en `OXYData_URL.txt` |
+| `CONSTITUTION.md`, 6.4 | Nueva regla: todo cambio que cree, renombre o elimine una tabla o columna se refleja en `_Diccionario` (solo estructura); la configuración de columnas va en la especificación de la app |
+| `CONSTITUTION.md`, 9 | Nueva sección: si `OXYData_URL.txt` no existe, el usuario lo crea antes de continuar con cualquier comando o petición |
+| Este historial | Entrada nueva |
 
 ---
 
@@ -51,7 +78,7 @@ Este documento es el único lugar donde se registran los cambios de los document
 | Dónde | Cambio |
 |---|---|
 | `OXY_App_Proformas_Especificacion` (v10), 3.1 | Leyenda y tabla de permisos (por ejemplo `Proformas` L·A·U pasa a L·I·A; `Proforma_Conceptos` L·A·U·D pasa a L·I·A·E; `Obras` L·A pasa a L·I) |
-| `OXY_AppSheet_Arquitectura_y_Seguridad` (v7), 5.2 | Leyenda, matriz de tablas por app, nota 9 y las decisiones DA-02, DA-04 y DA-09 |
+| `OXY_AppSheet_Arquitectura_y_Seguridad`, 5.2 | Leyenda, matriz de tablas por app, nota 9 y las decisiones DA-02, DA-04 y DA-09 |
 | Este historial | La entrada de DA-02 usa el código nuevo |
 | Sin cambio | Los nombres de AppSheet en inglés (*Adds*, *Updates*, *Deletes*, *Delete row*, *Data change type*) se conservan porque son los rótulos del editor. Modelo de datos, dashboard y pendientes no usan estos códigos |
 
@@ -63,10 +90,10 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 | Dónde | Cambio |
 |---|---|
-| `OXY_App_Proformas_Especificacion` (v9), 3.3 | Criterio de `Require?` al inicio de 3.3 y la línea `Require?` en las 71 columnas reales de `Proformas`, `Proforma_Conceptos`, `Proforma_Planificacion`, `Obras`, `Clientes` y `Contactos_Cliente`; fichas nuevas para las columnas de `Clientes` y `Contactos_Cliente` que no tenían. Orden de las propiedades como en el editor: `Show?`, `Editable?`, `Require?`, valor inicial, `Valid if` |
+| `OXY_App_Proformas_Especificacion`, 3.3 | Criterio de `Require?` al inicio de 3.3 y la línea `Require?` en las 71 columnas reales de `Proformas`, `Proforma_Conceptos`, `Proforma_Planificacion`, `Obras`, `Clientes` y `Contactos_Cliente`; fichas nuevas para las columnas de `Clientes` y `Contactos_Cliente` que no tenían. Orden de las propiedades como en el editor: `Show?`, `Editable?`, `Require?`, valor inicial, `Valid if` |
 | Fórmulas (*Required If*) | `Fecha_Envio` desde `Enviada`; `Fecha_Aceptacion` y `Doc_Aceptacion` en `Aceptada`; `Motivo_Rechazo` y `Fecha_Rechazo` en `Rechazada`; `Motivo_Anulacion` y `Fecha_Anulacion` en `Anulada`; `Eliminada_Por` y `Fecha_Eliminacion` en `Z-Eliminada`; `Tipo_Relacion` con `ISNOTBLANK([Proforma_Previa_ID])` (ya existía). En `Enviada` no se exige ningún dato de salida: aceptar, rechazar y anular son excluyentes y lo exigen los `Only if` de las acciones |
 | `OXYData` · `_Diccionario` | Respaldo previo `OXYData_20261018_0407`. `Requerido` = `Condicional` en esas nueve columnas |
-| `OXY_DataModel_Especificacion` (v17) | `Req.` = `Condicional` en las mismas nueve columnas |
+| `OXY_DataModel_Especificacion` | `Req.` = `Condicional` en las mismas nueve columnas |
 | Sin cambio | Arquitectura, dashboard y pendientes. Las próximas especificaciones de app llevarán `Require?` en cada ficha con este criterio |
 
 ---
@@ -77,7 +104,7 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 | Dónde | Cambio |
 |---|---|
-| `OXY_App_Proformas_Especificacion` (v8), 3.3 `Obras`, campo por campo con el mismo formato que `Proformas` | Se quitó la frase "solo lectura". Las doce columnas que escribe `A_Aceptar_CrearObra` llevan `Editable?` = `CONTEXT("ViewType") = "Never"` y su tipo (Ref a `Proformas`, `Obras` y `Clientes` donde corresponde). Las ocho que escribe OXY Gestión quedan opcionales y sin valor inicial; `Responsable_ID` ya no remite a una corrección pendiente en `OXYData` (hecha) |
+| `OXY_App_Proformas_Especificacion`, 3.3 `Obras`, campo por campo con el mismo formato que `Proformas` | Se quitó la frase "solo lectura". Las doce columnas que escribe `A_Aceptar_CrearObra` llevan `Editable?` = `CONTEXT("ViewType") = "Never"` y su tipo (Ref a `Proformas`, `Obras` y `Clientes` donde corresponde). Las ocho que escribe OXY Gestión quedan opcionales y sin valor inicial; `Responsable_ID` ya no remite a una corrección pendiente en `OXYData` (hecha) |
 | 3.2 | El paso 3 recuerda corregir los tipos y las propiedades de `Obras` tras agregar la tabla |
 | Sin cambio | Modelo de datos, arquitectura, `OXYData` y demás documentos: no cambia ninguna estructura ni regla |
 
@@ -91,9 +118,9 @@ Este documento es el único lugar donde se registran los cambios de los document
 |---|---|
 | `OXYData` | Respaldo previo: `OXYData_20261018_0146`. La pestaña `_Diccionario` anterior pasa a `_Diccionario_Legado` (solo consulta mientras se terminan las especificaciones). Nuevo `_Diccionario` con seis columnas: Tabla, Columna, Tipo AppSheet, Clave, Requerido y Virtual (419 columnas, las mismas de antes) |
 | `OXYData` · `_Leeme` | Puntos 3, 4 y 10 reescritos. Corregido un error mío del cambio anterior: el punto 1 había quedado reemplazado por el texto del punto 4; ya está restaurado |
-| `OXY_DataModel_Especificacion` (v16) | Convenciones: describen el nuevo `_Diccionario` y remiten a las especificaciones de app para la configuración |
-| `OXY_App_Proformas_Especificacion` (v6) | Las fórmulas de las virtuales ya no se dicen "iguales a las de `_Diccionario`": esta especificación es la única fuente |
-| `Pendientes` (v8) | 4.2 corregido; 4.13 nuevo con la limpieza del modelo de datos, la migración de roles y apps y el borrado de `_Diccionario_Legado` |
+| `OXY_DataModel_Especificacion` | Convenciones: describen el nuevo `_Diccionario` y remiten a las especificaciones de app para la configuración |
+| `OXY_App_Proformas_Especificacion` | Las fórmulas de las virtuales ya no se dicen "iguales a las de `_Diccionario`": esta especificación es la única fuente |
+| `Pendientes` | 4.2 corregido; 4.13 nuevo con la limpieza del modelo de datos, la migración de roles y apps y el borrado de `_Diccionario_Legado` |
 | Sin cambio | Instructivo `OXY_AppSheet_Acciones_y_Bots` (obsoleto, solo referencia) |
 
 ---
@@ -104,14 +131,14 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 | Dónde | Cambio |
 |---|---|
-| `OXY_App_Proformas_Especificacion` (v5) | `A_Generar_PDF`: `Only if` con `Borrador` o `Enviada`, y sus pruebas y notas de falla. `Doc_Proforma_Personalizado`: `Show?` y `Editable?` con `Borrador` o `Enviada`. Mensaje de `A_Enviar` sin la frase de que el PDF no se regenera. Regla 7 de 1.4 y nota de *Add* de líneas. `V_Control_PDF`. PR-9 y PR-16 ajustadas, PR-17 nueva, V29 nueva. Pendientes P-01 a P-03 y P-05 a P-08 cerrados; quedan P-01 (roles antiguos) y P-02 (¿`A_Iniciar` exige responsable?) |
+| `OXY_App_Proformas_Especificacion` | `A_Generar_PDF`: `Only if` con `Borrador` o `Enviada`, y sus pruebas y notas de falla. `Doc_Proforma_Personalizado`: `Show?` y `Editable?` con `Borrador` o `Enviada`. Mensaje de `A_Enviar` sin la frase de que el PDF no se regenera. Regla 7 de 1.4 y nota de *Add* de líneas. `V_Control_PDF`. PR-9 y PR-16 ajustadas, PR-17 nueva, V29 nueva. Pendientes P-01 a P-03 y P-05 a P-08 cerrados; quedan P-01 (roles antiguos) y P-02 (¿`A_Iniciar` exige responsable?) |
 | `OXYData` · `_Diccionario` | Las diez columnas de líneas con `Editable / If` = `IN([Proforma_ID].[Estado],LIST("Borrador","Enviada"))`; `Doc_Proforma` y `Doc_Proforma_Personalizado` (Show, Editable y notas); `Proforma_ID` con valor inicial `"PRF-"&UNIQUEID()`; `Motivo_Rechazo` sin `Reemplazada`; `Obras.Responsable_ID` no requerido; notas de `Snap_Global_Dia.Proformas_Abiertas_N` y `Proformas_Abiertas` |
 | `OXYData` · `_Reglas` y `_Leeme` | Regla *Enviar* reescrita; punto 4 de `_Leeme` sin número de versión |
-| `OXY_DataModel_Especificacion` (v15) | `Doc_Proforma`, `Doc_Proforma_Personalizado` (la fila estaba por error en `Proveedores`; se movió a `Proformas`), `Obras.Responsable_ID` no requerido, notas de las líneas y de los indicadores de proformas abiertas |
-| `OXY_Propuesta_Dashboard_Indicadores` (v5) | `Proformas_Abiertas_N` y `Proformas_Abiertas` se leen en vivo de las `Enviada` y pueden cambiar; los días pasados no se recalculan |
-| `OXY_AppSheet_Arquitectura_y_Seguridad` (v6) | V27 reformulada; V29 nueva |
-| `Pendientes` (v7) | 4.10: una `Enviada` sí se regenera con `A_Generar_PDF` |
-| Sin cambio | El instructivo `OXY_AppSheet_Acciones_y_Bots` (v13 y v14) está obsoleto y no se actualiza. La migración de roles y de las tres a cinco apps en `OXYData` y en el modelo de datos sigue pendiente aparte |
+| `OXY_DataModel_Especificacion` | `Doc_Proforma`, `Doc_Proforma_Personalizado` (la fila estaba por error en `Proveedores`; se movió a `Proformas`), `Obras.Responsable_ID` no requerido, notas de las líneas y de los indicadores de proformas abiertas |
+| `OXY_Propuesta_Dashboard_Indicadores` | `Proformas_Abiertas_N` y `Proformas_Abiertas` se leen en vivo de las `Enviada` y pueden cambiar; los días pasados no se recalculan |
+| `OXY_AppSheet_Arquitectura_y_Seguridad` | V27 reformulada; V29 nueva |
+| `Pendientes` | 4.10: una `Enviada` sí se regenera con `A_Generar_PDF` |
+| Sin cambio | El instructivo `OXY_AppSheet_Acciones_y_Bots` está obsoleto y no se actualiza. La migración de roles y de las tres a cinco apps en `OXYData` y en el modelo de datos sigue pendiente aparte |
 
 ---
 
@@ -237,11 +264,11 @@ Este documento es el único lugar donde se registran los cambios de los document
 | `OXY_DataModel_Especificacion` | Columna de apps del mapa de tablas, descripción de `Rol` y textos "solo Gestión" |
 | `OXY_Propuesta_Dashboard_Indicadores` | Tercera app, usuarios y roles de OXY Dashboard |
 | Documentos de las cinco apps y `OXY_AppSheet_Componentes_Comunes` | Redactarlos. Hasta entonces el instructivo sigue siendo la única fuente de las fichas |
-| Instructivo | Moverlo a `deprecated` solo después de migrar sus fichas |
+| Instructivo | Sus fichas pasan a las especificaciones de cada app; el instructivo queda como referencia histórica |
 
 ---
 
-## v14 — 17 de octubre de 2026
+## Instructivo: aceptación y rechazo visibles tras el cambio de estado — 17 de octubre de 2026
 
 **Motivo:** que los datos de aceptación y el motivo de rechazo sigan visibles una vez que la proforma cambia de estado.
 
@@ -267,7 +294,7 @@ La columna `Show if` de `_Diccionario` se actualizó para las tres filas. Ese mi
 
 ---
 
-## v13 — 16 de octubre de 2026
+## Instructivo: exclusión mutua entre motivo de rechazo y anulación — 16 de octubre de 2026
 
 **Motivo:** una proforma `Enviada` no debe tener a la vez motivo de rechazo y motivo de anulación; solo uno de los dos puede llenarse.
 
@@ -290,7 +317,7 @@ La columna `Data Validity Formula` de `_Diccionario` se actualizó para ambas fi
 
 ---
 
-## v12 — 15 de octubre de 2026
+## Instructivo: `Configuracion.Valor` pasa a Decimal y nace `Compania` — 15 de octubre de 2026
 
 **Motivo:** en AppSheet la columna `Configuracion.Valor` es Decimal y no puede leer textos: las columnas virtuales de datos de OXY salían vacías. Los datos de empresa y los correos de cobranza pasan a una tabla propia.
 
@@ -328,7 +355,7 @@ Pendiente de OXY: reemplazar `COMPLETAR` por los datos reales en `Compania`.
 
 ---
 
-## v11 — 15 de octubre de 2026
+## Instructivo: la plantilla pasa a Google Docs — 15 de octubre de 2026
 
 **Motivo:** el usuario creó la plantilla en Google Docs (`Plantilla_Demo`) a partir de la plantilla Word aprobada, y es la que usará el bot.
 
@@ -348,11 +375,11 @@ Las marcas se revisaron contra la documentación de AppSheet y hilos de la comun
 
 ### Datos (`OXYData`)
 
-Sin cambios de estructura. `_Leeme` apunta al modelo v12.
+Sin cambios de estructura. `_Leeme` apunta al modelo de datos.
 
 ---
 
-## v10 — 14 de octubre de 2026
+## Instructivo: PDF regenerable durante Borrador y documento personalizado — 14 de octubre de 2026
 
 **Motivo:** generar el PDF de la proforma durante el Borrador, las veces que haga falta, para revisarlo antes de enviar; y permitir una versión propia del documento.
 
@@ -393,7 +420,7 @@ Pendiente: las proformas Borrador de demostración (PRF-019, PRF-022, PRF-023) t
 
 ---
 
-## v9 — 14 de octubre de 2026
+## Instructivo: datos de OXY en la plantilla del PDF — 14 de octubre de 2026
 
 **Motivo:** que la plantilla de Google Docs de la proforma pueda imprimir los datos de OXY como empresa y los textos fijos de la proforma, editables sin tocar las apps ni la plantilla.
 
@@ -428,7 +455,7 @@ Pendiente de OXY: reemplazar `COMPLETAR` por los datos reales.
 
 ---
 
-## v8 — 14 de octubre de 2026
+## Instructivo: un bloque por columna y una propiedad por línea — 14 de octubre de 2026
 
 **Motivo:** que el programador pueda leer el instructivo línea a línea y aplicarlo en AppSheet sin memorizar qué propiedad va en qué columna o acción. Antes, varias propiedades y varias columnas compartían una sola línea. No cambia ninguna regla de negocio, expresión ni nombre de componente: cambia la forma de presentarlos.
 
@@ -454,7 +481,7 @@ Sin cambios.
 
 ---
 
-## v7 — 14 de octubre de 2026
+## Instructivo: simplificación del manejo de proformas — 14 de octubre de 2026
 
 **Motivo:** simplificar el manejo de proformas. Se retira todo lo que el sistema hacía solo con las revisiones, las complementarias y los reemplazos; la relación entre proformas la asigna el usuario. Se agrega el estado `Z-Eliminada` y la acción *Eliminar* para los borradores.
 
@@ -483,7 +510,7 @@ Sin cambios.
 | Pruebas | Las pruebas de humo bajan de 16 a 15. Se reescriben los escenarios E2E-2 a E2E-6 y la tabla de recuperación de fallos |
 | Expresiones | Se retiran tres expresiones reutilizables que solo usaba la copia de revisiones |
 
-### Corrección a la v6
+### Corrección sobre los identificadores deterministas
 
 El esquema de identificadores deterministas `<origen>-R<n>` era un diseño propio del instructivo y no estaba en el modelo de datos, donde `Proforma_ID` se genera con `"PRF'" & UNIQUEID()`. Se retira junto con las revisiones automáticas.
 
