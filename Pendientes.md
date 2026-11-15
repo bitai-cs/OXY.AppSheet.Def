@@ -151,11 +151,11 @@ Quedan para una sola pasada, con respaldo previo de `OXYData`, cuando estén esc
 
 **Cómo se retoma.**
 1. Respaldar `OXYData` (`OXYData_aaaammdd_hhmm`).
-2. Agregar columna `Copiar_Desde_ID` a `Proformas` en `OXYData` y crear tabla `Control_Copias` con la fila `COPIAS` (`Estado = "Libre"`).
+2. Agregar columna `Copiar_Desde_ID` a `Proformas` en `OXYData` y crear tabla `Control_Copias` (solicitudes de copia, sin filas iniciales).
 3. Actualizar `_Diccionario` de `OXYData` (solo estructura: Tabla, Columna, Tipo AppSheet, Clave, Requerido, Virtual).
 4. Escribir los cambios en `OXY_App_Proformas_Especificacion`, `OXY_DataModel_Especificacion`, `OXY_AppSheet_Arquitectura_y_Seguridad` y `Pendientes`.
 5. Registrar todo en `OXY_AppSheet_Historial_de_Cambios`.
-6. Construir en el editor: tabla `Control_Copias`, acciones PRO-A13 a PRO-A17, bot PRO-B05, slice `S_Control_Copias_En_Proceso`.
+6. Construir en el editor: tabla `Control_Copias`, acciones PRO-A13 a PRO-A15, bot PRO-B05, slice `S_Control_Copias_En_Proceso`.
 7. Probar con PR-18 a PR-21.
 
 **Cierra cuando.** Las pruebas PR-18 a PR-21 pasaron y el cambio está registrado en el historial.

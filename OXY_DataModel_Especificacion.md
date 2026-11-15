@@ -55,7 +55,7 @@ Clientes ─< Contactos_Cliente
 Clientes ─< Proformas ─< Proforma_Conceptos        (lo que se imprime)
                     └─< Proforma_Planificacion ─> Tipos_Costo ─> Categorias_Costo   (costo interno)
 Proformas ─1:1─> Obras      (Proformas ─> Proformas: previa asignada a mano por el usuario, revisión / complementaria; Obras ─> Obras: obra principal)
-Proformas ─> Control_Copias (destino y origen de copia de líneas; tabla de una sola fila)
+Proformas ─> Control_Copias (destino y origen de cada solicitud de copia de líneas; una fila por copia)
 Obras ─< Gastos_Obra ─> Tipos_Costo, Proveedores
 Obras ─< Registro_Horas ─> Trabajadores ─< Tarifas_Trabajador
 Obras ─< Asignaciones_Obra ─> Trabajadores
@@ -280,7 +280,7 @@ Obras, Gastos_Obra, Abonos_Obra, Facturas_Obra, ... ──bots──> Snap_*, Al
 ### Proformas
 
 - **Tipo:** Transaccional (ciclo de vida)
-- **Por qué existe:** Cabecera de la cotización al cliente. Una proforma aceptada genera una obra. Maneja estados (Borrador → Enviada → Aceptada/Rechazada/Vencida/Anulada; un Borrador también puede pasar a Z-Eliminada, nunca a Anulada). Una proforma puede apuntar a otra como previa (revisión o complementaria), relación que el usuario asigna a mano; el sistema no copia datos ni cambia el estado de la previa. Los precios y márgenes se calculan de sus tablas hijas. Se pueden copiar conceptos y planificación desde otra proforma mediante la columna `Copiar_Desde_ID` y el bot `B_Copiar_Lineas`: la copia se ejecuta solo desde un `Borrador`, agrega líneas (no reemplaza) y conserva el `Orden` original con desplazamiento si hay conflicto.
+- **Por qué existe:** Cabecera de la cotización al cliente. Una proforma aceptada genera una obra. Maneja estados (Borrador → Enviada → Aceptada/Rechazada/Vencida/Anulada; un Borrador también puede pasar a Z-Eliminada, nunca a Anulada). Una proforma puede apuntar a otra como previa (revisión o complementaria), relación que el usuario asigna a mano; el sistema no copia datos ni cambia el estado de la previa. Los precios y márgenes se calculan de sus tablas hijas. Se pueden copiar conceptos y planificación desde otra proforma mediante la columna `Copiar_Desde_ID` y el bot `B_Copiar_Lineas`: la copia se ejecuta solo desde un `Borrador`, agrega líneas (no reemplaza) y copia el `Orden` original tal cual, sin desplazamiento.
 - **Relaciones:** Clientes, Contactos_Cliente (N:1); Proforma_Conceptos y Proforma_Planificacion (1:N, "is a part of"); Proformas (autorreferencia, previa); Obras (1:1); Control_Copias (destino y origen de copia de líneas)
 - **Procesos:** Ciclo de vida de proformas; creación de obra; copia de conceptos y planificación
 - **Apps:** Gestión
@@ -700,18 +700,19 @@ Obras, Gastos_Obra, Abonos_Obra, Facturas_Obra, ... ──bots──> Snap_*, Al
 ### Control_Copias
 
 - **Tipo:** Control técnico
-- **Por qué existe:** Ancla de una sola fila para el bot de copia de líneas de proforma. Guarda el destino y el origen de cada copia y su estado, para que el bot `B_Copiar_Lineas` sepa a qué proforma agregar las líneas copiadas y evitar dos copias simultáneas.
+- **Por qué existe:** Solicitudes de copia de líneas de proforma: una fila por copia. Guarda el destino y el origen y su estado, para que el bot `B_Copiar_Lineas` sepa a qué proforma agregar las líneas copiadas y para impedir dos copias simultáneas (mientras haya una solicitud `En proceso` no se admite otra).
 - **Relaciones:** Proformas (N:1 destino, N:1 origen)
 - **Procesos:** Copia de conceptos y planificación de una proforma a otra
 - **Apps:** Proformas
 
 | Campo | Tipo | Req. | Descripción |
 |---|---|---|---|
-| `Control_ID` | Texto · **clave** | Si | Identificador fijo de la fila de control. Valor fijo: `"COPIAS"` |
+| `Copia_ID` | Texto · **clave** | Si | Identificador de la solicitud de copia. Valor inicial: `"CPY-"&UNIQUEID()` |
 | `Proforma_Destino_ID` | Ref -> Proformas | Si | Proforma que ejecuta la acción de copia (destino de las líneas). |
 | `Proforma_Origen_ID` | Ref -> Proformas | Si | Proforma de la que se copian conceptos y planificación. |
-| `Estado` | Enum | Si | `Libre` o `En proceso`. Solo una fila a la vez; bloquea copias concurrentes. |
-| `Creado_En` | DateTime | No | Cuándo se creó o actualizó la fila de control. |
+| `Estado` | Enum | Si | `En proceso` o `Procesada`. Nace `En proceso`; el bot la pasa a `Procesada`. Solo puede haber una `En proceso` a la vez. |
+| `Creado_En` | DateTime | Si | Cuándo se creó la solicitud. |
+| `Creado_Por` | Email | Si | Usuario que pidió la copia. |
 
 ## 9. Consolidación para el dashboard
 

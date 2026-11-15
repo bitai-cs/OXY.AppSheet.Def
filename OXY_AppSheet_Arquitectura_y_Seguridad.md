@@ -260,7 +260,7 @@ Notas de la matriz:
 9. **Bajas de maestras:** OXY Master puede borrar filas de sus tablas (**E**), salvo `Trabajadores` (se da de baja con `Activo = No`), `Configuracion` y `Compania`, que no admiten borrados (DA-09).
 10. **`Tipos_Costo` en OXY Campo:** solo se pueden elegir los de `Visible_Campo = "Si"`; se aplica como `Valid if` de la columna `Tipo_Costo_ID` de la app, no como filtro de seguridad.
 11. **Obras de OXY Campo:** las vistas muestran solo las obras asignadas a la persona mediante un slice; es una comodidad de pantalla, no una restricción de datos (5.2).
-12. **`Control_Copias` en OXY Proformas:** tabla de control técnico de una fila (`COPIAS`) para el bot de copia de líneas de proforma. No tiene formulario visible; solo se usa internamente por `B_Copiar_Lineas`.
+12. **`Control_Copias` en OXY Proformas:** tabla técnica de solicitudes de copia de líneas de proforma (una fila por copia): la agrega `A_Copiar_Planificacion_Conceptos` y la cierra `B_Copiar_Lineas`. No tiene formulario visible.
 
 ---
 
@@ -292,7 +292,7 @@ Notas de la matriz:
 | Alertas: generación y aviso | `ALE-A03` a `ALE-A05` y `ALE-B01` a `ALE-B04` | Gestión |
 | Notificaciones del log | `LOG-B01` y `LOG-B02` (solo reaccionan a eventos de procesos programados, que nacen con `Procesado = "No"`) | Gestión |
 | Procesos de indicadores | Jobs `J01` a `J11` de la propuesta de Dashboard | Gestión (DA-07) |
-| Copia de líneas | `A_Copiar_Planificacion_Conceptos` (PRO-A13), `A_Copiar_Concepto` (PRO-A14), `A_Copiar_Planificacion` (PRO-A15), `A_Copiar_Control_Set` (PRO-A16), `A_Copiar_Control_Limpiar` (PRO-A17), `B_Copiar_Lineas` (PRO-B05) | Proformas |
+| Copia de líneas | `A_Copiar_Planificacion_Conceptos` (PRO-A13), `A_Copiar_Concepto` (PRO-A14), `A_Copiar_Planificacion` (PRO-A15), `B_Copiar_Lineas` (PRO-B05) | Proformas |
 | Tablas maestras | Altas y ediciones con las acciones del sistema; no hay acciones ni bots propios en esta versión | Master |
 
 ---
@@ -379,7 +379,7 @@ Las pruebas de cada ficha y los escenarios propios de cada app están en su docu
 | DA-07 | App que aloja los jobs de indicadores | OXY Gestión | Es la única app con las tablas que los jobs leen |
 | DA-08 | Responsable de la obra al crearla | `Obras.Responsable_ID` queda en blanco al crear la obra | Sin valor inicial ni obligatoriedad al crear; si `A_Iniciar` lo exige y quién puede ser elegido queda por definir en la especificación de OXY Gestión |
 | DA-09 | Borrado de filas en OXY Master | `Trabajadores` se da de baja con `Activo = No`; `Compania` y `Configuracion` no se borran | Esas tres tablas sin **E**; las demás maestras conservan **E** |
-| DA-10 | Copia de conceptos y planificación de proforma | Tabla de control de una fila `Control_Copias` + bot `B_Copiar_Lineas` con dos pasos "Execute an action on a set of rows"; solo en `Borrador`, agrega líneas, conserva `Orden` | Evita fallos de concurrencia y pasa el `Proforma_ID` destino a las acciones auxiliares |
+| DA-10 | Copia de conceptos y planificación de proforma | Tabla de solicitudes `Control_Copias` (una fila por copia, agregada por la acción) + bot `B_Copiar_Lineas` con dos pasos "Execute an action on a set of rows"; solo en `Borrador`, agrega líneas, copia `Orden` tal cual | Evita fallos de concurrencia y pasa el `Proforma_ID` destino a las acciones auxiliares |
 
 ---
 
