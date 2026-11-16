@@ -4,6 +4,17 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 ---
 
+## Condición y mensaje de PRO-A13 — 14 de noviembre de 2026
+
+**Motivo:** simplificar la condición de `A_Copiar_Planificacion_Conceptos` y usar la referencia directa a `Copiar_Desde_ID` en el mensaje de confirmación.
+
+| Dónde | Cambio |
+|---|---|
+| `OXY_App_Proformas_Especificacion`, 5 (PRO-A13) | *Only if this condition is true*: se quitan las comprobaciones de existencia y de estado `Z-Eliminada` del origen (las cubre el `Valid if` de `Copiar_Desde_ID`). *Confirmation Message*: usa `[Copiar_Desde_ID].[Numero]`. Nota y *Prueba −* ajustadas |
+| Este historial | Entrada nueva |
+
+---
+
 ## Corrección del diseño de copia de planificación y conceptos — 14 de noviembre de 2026
 
 **Motivo:** la definición de PRO-A13 a PRO-A17 y PRO-B05 no era factible: el grupo `A_Copiar_Planificacion_Conceptos` (tabla `Proformas`) llamaba a una acción de `Control_Copias`, que además usaba columnas de `Proformas`; no había bloqueo real de copias simultáneas y la idempotencia del bot estaba mal descrita. `Control_Copias` pasa de fila única a tabla de solicitudes.

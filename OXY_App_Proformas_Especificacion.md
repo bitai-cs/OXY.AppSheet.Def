@@ -773,15 +773,15 @@ Cada ficha lista, de arriba abajo, lo que se completa en el editor (**Actions �
   - `Estado` = `"En proceso"`
   - `Creado_En` = `NOW()`
   - `Creado_Por` = `USEREMAIL()`
-- **Only if this condition is true:** `AND(<ROL_PRO>,[Estado]="Borrador",ISNOTBLANK([Copiar_Desde_ID]),[Copiar_Desde_ID]<>[Proforma_ID],ISNOTBLANK(LOOKUP([Copiar_Desde_ID],"Proformas","Proforma_ID","Estado")),LOOKUP([Copiar_Desde_ID],"Proformas","Proforma_ID","Estado")<>"Z-Eliminada",COUNT(SELECT(Control_Copias[Copia_ID],[Estado]="En proceso"))=0)`
+- **Only if this condition is true:** `AND(<ROL_PRO>,[Estado]="Borrador",ISNOTBLANK([Copiar_Desde_ID]),[Copiar_Desde_ID]<>[Proforma_ID],COUNT(SELECT(Control_Copias[Copia_ID],[Estado]="En proceso"))=0)`
 - **Needs confirmation?:** Yes
-- **Confirmation Message:** `"¿Copiar conceptos y planificación desde la proforma "&LOOKUP([Copiar_Desde_ID],"Proformas","Proforma_ID","Numero")&"? Se agregarán las líneas a esta proforma sin borrar las existentes."`
+- **Confirmation Message:** `"¿Copiar conceptos y planificación desde la proforma " & ([Copiar_Desde_ID].[Numero]) & "? Se agregarán las líneas a esta proforma sin borrar las existentes."`
 - **Position:** Prominent
 - **Display name:** Copiar planificación y conceptos
 - **Idempotencia:** cada ejecución crea una solicitud nueva y copia otra vez las líneas del origen (las claves de las líneas nuevas son distintas): pulsarla dos veces duplica las líneas. Mientras exista una solicitud `En proceso` el botón no aparece, en ningún usuario, hasta que el bot la pase a `Procesada` (tras sincronizar).
-- **Nota:** se ejecuta solo en `Borrador`. La copia agrega líneas; no reemplaza. `Orden` se copia tal cual: solo ordena la impresión y no es único, por lo que las líneas copiadas pueden repetir números de orden de las existentes.
+- **Nota:** se ejecuta solo en `Borrador`. La copia agrega líneas; no reemplaza. `Orden` se copia tal cual: solo ordena la impresión y no es único, por lo que las líneas copiadas pueden repetir números de orden de las existentes. Que el origen exista y no sea `Z-Eliminada` lo garantiza el `Valid if` de la columna `Copiar_Desde_ID` (3.3), no esta condición.
 - **Prueba +:** un `Borrador` con `Copiar_Desde_ID` apuntando a una proforma con conceptos y planificación: el botón aparece; al pulsarlo, se crea una fila `En proceso` en `Control_Copias` y el bot copia las líneas al destino y la pasa a `Procesada`.
-- **Prueba −:** una proforma no `Borrador`, sin `Copiar_Desde_ID`, con `Copiar_Desde_ID` igual a su propio ID, con origen `Z-Eliminada`, o con otra solicitud `En proceso`: no aparece.
+- **Prueba −:** una proforma no `Borrador`, sin `Copiar_Desde_ID`, con `Copiar_Desde_ID` igual a su propio ID, o con otra solicitud `En proceso`: no aparece.
 - **Repetición:** se puede ejecutar varias veces; cada una agrega las líneas del origen al destino (las existentes del destino se mantienen).
 - **Si falla:** revisar `V_Control_Copias` para ver si quedó una solicitud `En proceso`; revisar `Monitor` de `B_Copiar_Lineas`.
 
