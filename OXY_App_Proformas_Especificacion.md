@@ -117,7 +117,7 @@ Códigos: **L** lectura · **I** inserción (*Adds*) · **A** actualización (*U
 | `Configuracion` | L | IGV, vigencia y margen mínimo |
 | `Compania` | L | Datos de OXY que se imprimen en el PDF |
 | `Log_Eventos` | L·I | Los bots y las acciones auxiliares escriben los eventos de proforma y de obra creada |
-| `Control_Copias` | L·I·A | Ancla de una sola fila para el bot de copia de líneas de proforma; sin formulario visible |
+| `Control_Copias` | L·I·A | Solicitudes de copia de líneas de proforma: una fila por copia, la agrega `A_Copiar_Planificacion_Conceptos` y la cierra el bot de copia; sin formulario visible |
 
 ### 3.2 Preparación
 
@@ -125,13 +125,13 @@ Códigos: **L** lectura · **I** inserción (*Adds*) · **A** actualización (*U
 2. Definir los permisos de 3.1 en **Data → Tables → (tabla) → Permissions**.
 3. En `Obras`, no crear columnas virtuales: la tabla se usa solo para crear la fila y consultarla. Después de agregarla, corregir los tipos y las propiedades de columna de 3.3.
 4. En `Trabajadores`, la columna `Area_ID` apunta a una tabla que no está en la app: definirla como *Text* en esta app (⚠ V25).
-5. En `Control_Copias`, crear la fila `COPIAS` con `Control_ID = "COPIAS"` y `Estado = "Libre"`.
+5. En `Control_Copias`, no crear filas: cada copia crea su propia fila de solicitud.
 6. Aplicar la configuración de columnas de 3.3.
 7. Crear los slices de 3.4 y los de 3.6.
 8. Configurar las acciones de sistema de 3.5.
 9. Dejar en Drive la carpeta `Proformas_Files` y la plantilla `Plantilla_Proforma` (Google Docs).
 10. Confirmar que la fila `OXY` de `Compania` tiene los datos reales y que `Configuracion` tiene `IGV_PCT`, `VIGENCIA_PROFORMA_DIAS` y `MARGEN_MINIMO_PCT`.
-11. Orden de construcción: columnas y slices; acciones auxiliares (`A_Aceptar_Set`, `A_Aceptar_CrearObra`, `A_Vencer_Log`, `A_Vencer_Set`, `A_Copiar_Control_Set`, `A_Copiar_Control_Limpiar`, `A_Copiar_Concepto`, `A_Copiar_Planificacion`); acciones visibles y grupos (`A_Generar_PDF` antes que `A_Enviar`); vistas; bots.
+11. Orden de construcción: columnas y slices; acciones auxiliares (`A_Aceptar_Set`, `A_Aceptar_CrearObra`, `A_Vencer_Log`, `A_Vencer_Set`, `A_Copiar_Concepto`, `A_Copiar_Planificacion`); acciones visibles y grupos (`A_Generar_PDF` antes que `A_Enviar`); vistas; bots.
 
 ### 3.3 Configuración de columnas
 
@@ -300,38 +300,44 @@ Cada bloque es una columna; cada línea, una propiedad del editor (**Data → Ta
 
 #### Tabla `Control_Copias`
 
-**`Control_ID`** (Text, clave)
+**`Copia_ID`** (Text, clave)
 - Show?: `FALSE`
-- Editable?: `CONTEXT("ViewType") = "Never"`
+- Editable?: `FALSE`
 - Require?: `TRUE`
-- Initial value: `"COPIAS"`
-- Nota: valor fijo de la única fila de control.
+- Initial value: `"CPY-"&UNIQUEID()`
+- Nota: una fila por solicitud de copia.
 
 **`Proforma_Destino_ID`** (Ref a `Proformas`)
 - Show?: `FALSE`
-- Editable?: `CONTEXT("ViewType") = "Never"`
+- Editable?: `FALSE`
 - Require?: `TRUE`
-- Nota: proforma que ejecuta la acción de copia (destino de las líneas). Escrito por `A_Copiar_Control_Set`.
+- Nota: proforma que ejecuta la acción de copia (destino de las líneas). Escrito por `A_Copiar_Planificacion_Conceptos`.
 
 **`Proforma_Origen_ID`** (Ref a `Proformas`)
 - Show?: `FALSE`
-- Editable?: `CONTEXT("ViewType") = "Never"`
+- Editable?: `FALSE`
 - Require?: `TRUE`
-- Nota: proforma de la que se copian conceptos y planificación. Escrito por `A_Copiar_Control_Set`.
+- Nota: proforma de la que se copian conceptos y planificación. Escrito por `A_Copiar_Planificacion_Conceptos`.
 
 **`Estado`** (Enum)
 - Show?: `FALSE`
-- Editable?: `CONTEXT("ViewType") = "Never"`
+- Editable?: `FALSE`
 - Require?: `TRUE`
-- Valores: `Libre`, `En proceso`
-- Initial value: `"Libre"`
-- Nota: `Libre` permite iniciar una copia; `En proceso` bloquea copias concurrentes.
+- Valores: `En proceso`, `Procesada`
+- Initial value: `"En proceso"`
+- Nota: `En proceso` desde que se pulsa la acción hasta que el bot termina; mientras exista una fila `En proceso` no se puede iniciar otra copia. El bot la pasa a `Procesada`.
 
 **`Creado_En`** (DateTime)
 - Show?: `FALSE`
-- Editable?: `CONTEXT("ViewType") = "Never"`
-- Require?: `FALSE`
+- Editable?: `FALSE`
+- Require?: `TRUE`
 - Initial value: `NOW()`
+
+**`Creado_Por`** (Email)
+- Show?: `FALSE`
+- Editable?: `FALSE`
+- Require?: `TRUE`
+- Initial value: `USEREMAIL()`
 
 #### Tabla `Proforma_Conceptos`
 
@@ -419,7 +425,7 @@ Cada bloque es una columna; cada línea, una propiedad del editor (**Data → Ta
 
 - *Add* y *Edit* de `Proformas`: todos los roles.
 - *Add* y *Edit* de `Proforma_Conceptos` y *Add* y *Edit* de `Proforma_Planificacion`: todos los roles, con `Only if` vacío (la condición de estado la aplica la configuración de columnas de 3.3); el *Delete* de ambas tablas solo en `Borrador` (⚠ V27, V29).
-- *Add* y *Edit* de `Control_Copias`: todos los roles, `Only if` vacío (las acciones auxiliares de copia las llaman los bots, no los usuarios).
+- *Add* y *Edit* de `Control_Copias`: todos los roles, `Only if` vacío (la fila la agrega `A_Copiar_Planificacion_Conceptos` y la cierra el bot `B_Copiar_Lineas`; ningún usuario la edita en pantalla).
 - *Add* de `Clientes` y *Add* de `Contactos_Cliente`: todos los roles (sin *Edit* ni *Delete*).
 
 ---
@@ -483,8 +489,6 @@ Cada bloque es una columna; cada línea, una propiedad del editor (**Data → Ta
 | `A_Copiar_Planificacion_Conceptos` | PRO-A13 | ✓ | ✓ | ✓ | ✓ |
 | `A_Copiar_Concepto` | PRO-A14 | auxiliar | auxiliar | auxiliar | auxiliar |
 | `A_Copiar_Planificacion` | PRO-A15 | auxiliar | auxiliar | auxiliar | auxiliar |
-| `A_Copiar_Control_Set` | PRO-A16 | auxiliar | auxiliar | auxiliar | auxiliar |
-| `A_Copiar_Control_Limpiar` | PRO-A17 | auxiliar | auxiliar | auxiliar | auxiliar |
 
 Acciones de sistema: *Add* y *Edit* de las tablas de proforma, *Delete* de conceptos y planificación (solo en `Borrador`) y *Add* de `Clientes` y `Contactos_Cliente`, con los cuatro roles (3.5). *Add* y *Edit* de `Control_Copias` con los cuatro roles (3.5).
 
@@ -754,27 +758,32 @@ Cada ficha lista, de arriba abajo, lo que se completa en el editor (**Actions �
 - **Repetición:** ver `B_Proformas_Vencidas`.
 - **Si falla:** ver `B_Proformas_Vencidas`.
 
-#### PRO-A13 · `A_Copiar_Planificacion_Conceptos` · Acción visible (grupo)
+#### PRO-A13 · `A_Copiar_Planificacion_Conceptos` · Acción visible
 
 - **Roles permitidos:** `Super`, `Administracion`, `Supervisor`, `Planificacion`
-- **Depende de:** `A_Copiar_Control_Set` (PRO-A16), `B_Copiar_Lineas` (PRO-B05)
+- **Depende de:** `B_Copiar_Lineas` (PRO-B05), `A_Copiar_Concepto` (PRO-A14), `A_Copiar_Planificacion` (PRO-A15)
 - **For a record of this table:** `Proformas`
 - **Action name:** `A_Copiar_Planificacion_Conceptos`
-- **Do this:** Grouped: execute a sequence of actions
-- **Actions:** (en este orden)
-  1. `A_Copiar_Control_Set`
-  - Nota: el grupo establece la fila de control y el bot `B_Copiar_Lineas` se dispara por el cambio de `Control_Copias.Estado` a `"En proceso"`.
-- **Only if this condition is true:** `AND(<ROL_PRO>,[Estado]="Borrador",ISNOTBLANK([Copiar_Desde_ID]),[Copiar_Desde_ID]<>[Proforma_ID],ISNOTBLANK(LOOKUP([Copiar_Desde_ID],"Proformas","Proforma_ID","Estado")),LOOKUP([Copiar_Desde_ID],"Proformas","Proforma_ID","Estado")<>"Z-Eliminada")`
+- **Do this:** Data: add a new row to another table using values from this row
+- **Table to add rows to:** `Control_Copias`
+- **Set these columns:**
+  - `Copia_ID` = `"CPY-"&UNIQUEID()`
+  - `Proforma_Destino_ID` = `[Proforma_ID]`
+  - `Proforma_Origen_ID` = `[Copiar_Desde_ID]`
+  - `Estado` = `"En proceso"`
+  - `Creado_En` = `NOW()`
+  - `Creado_Por` = `USEREMAIL()`
+- **Only if this condition is true:** `AND(<ROL_PRO>,[Estado]="Borrador",ISNOTBLANK([Copiar_Desde_ID]),[Copiar_Desde_ID]<>[Proforma_ID],COUNT(SELECT(Control_Copias[Copia_ID],[Estado]="En proceso"))=0)`
 - **Needs confirmation?:** Yes
-- **Confirmation Message:** `¿Copiar conceptos y planificación desde la proforma "&LOOKUP([Copiar_Desde_ID],"Proformas","Proforma_ID","Numero")&"? Se agregarán las líneas a esta proforma sin borrar las existentes.`
+- **Confirmation Message:** `"¿Copiar conceptos y planificación desde la proforma " & ([Copiar_Desde_ID].[Numero]) & "? Se agregarán las líneas a esta proforma sin borrar las existentes."`
 - **Position:** Prominent
 - **Display name:** Copiar planificación y conceptos
-- **Idempotencia:** tras ejecutarse, `Control_Copias.Estado` pasa a `"En proceso"` y el botón sigue disponible hasta que el bot termine y vuelva a `Libre`; no hay bloqueo de pantalla mientras tanto.
-- **Nota:** se ejecuta solo en `Borrador`. La copia agrega líneas; no reemplaza. El `Orden` se conserva con desplazamiento si hay conflicto con líneas existentes del destino.
-- **Prueba +:** un `Borrador` con `Copiar_Desde_ID` apuntando a una proforma con conceptos y planificación: el botón aparece; al pulsarlo, `Control_Copias` pasa a `En proceso` y el bot copia las líneas al destino.
-- **Prueba −:** una proforma no `Borrador`, sin `Copiar_Desde_ID`, con `Copiar_Desde_ID` igual a su propio ID, o con origen `Z-Eliminada`: no aparece.
+- **Idempotencia:** cada ejecución crea una solicitud nueva y copia otra vez las líneas del origen (las claves de las líneas nuevas son distintas): pulsarla dos veces duplica las líneas. Mientras exista una solicitud `En proceso` el botón no aparece, en ningún usuario, hasta que el bot la pase a `Procesada` (tras sincronizar).
+- **Nota:** se ejecuta solo en `Borrador`. La copia agrega líneas; no reemplaza. `Orden` se copia tal cual: solo ordena la impresión y no es único, por lo que las líneas copiadas pueden repetir números de orden de las existentes. Que el origen exista y no sea `Z-Eliminada` lo garantiza el `Valid if` de la columna `Copiar_Desde_ID` (3.3), no esta condición.
+- **Prueba +:** un `Borrador` con `Copiar_Desde_ID` apuntando a una proforma con conceptos y planificación: el botón aparece; al pulsarlo, se crea una fila `En proceso` en `Control_Copias` y el bot copia las líneas al destino y la pasa a `Procesada`.
+- **Prueba −:** una proforma no `Borrador`, sin `Copiar_Desde_ID`, con `Copiar_Desde_ID` igual a su propio ID, o con otra solicitud `En proceso`: no aparece.
 - **Repetición:** se puede ejecutar varias veces; cada una agrega las líneas del origen al destino (las existentes del destino se mantienen).
-- **Si falla:** revisar `V_Control_Copias` para ver si `Control_Copias.Estado` quedó en `En proceso`; revisar `Monitor` de `B_Copiar_Lineas`.
+- **Si falla:** revisar `V_Control_Copias` para ver si quedó una solicitud `En proceso`; revisar `Monitor` de `B_Copiar_Lineas`.
 
 #### PRO-A14 · `A_Copiar_Concepto` · Auxiliar
 
@@ -785,7 +794,7 @@ Cada ficha lista, de arriba abajo, lo que se completa en el editor (**Actions �
 - **Table to add rows to:** `Proforma_Conceptos`
 - **Set these columns:**
   - `Concepto_ID` = `"CNC-"&UNIQUEID()`
-  - `Proforma_ID` = `LOOKUP("COPIAS","Control_Copias","Control_ID","Proforma_Destino_ID")`
+  - `Proforma_ID` = `ANY(SELECT(Control_Copias[Proforma_Destino_ID],[Estado]="En proceso"))`
   - `Orden` = `[Orden]`
   - `Concepto` = `[Concepto]`
   - `Monto_Sin_IGV` = `[Monto_Sin_IGV]`
@@ -796,7 +805,7 @@ Cada ficha lista, de arriba abajo, lo que se completa en el editor (**Actions �
 - **Prueba +:** se verifica con `B_Copiar_Lineas`.
 - **Prueba −:** no aparece en ninguna vista.
 - **Repetición:** no aplica.
-- **Si falla:** comprobar que `Control_Copias` tiene una fila `COPIAS` con `Proforma_Destino_ID` llena.
+- **Si falla:** comprobar que `Control_Copias` tiene una solicitud `En proceso` con `Proforma_Destino_ID` llena.
 
 #### PRO-A15 · `A_Copiar_Planificacion` · Auxiliar
 
@@ -807,7 +816,7 @@ Cada ficha lista, de arriba abajo, lo que se completa en el editor (**Actions �
 - **Table to add rows to:** `Proforma_Planificacion`
 - **Set these columns:**
   - `Planif_ID` = `"PLN-"&UNIQUEID()`
-  - `Proforma_ID` = `LOOKUP("COPIAS","Control_Copias","Control_ID","Proforma_Destino_ID")`
+  - `Proforma_ID` = `ANY(SELECT(Control_Copias[Proforma_Destino_ID],[Estado]="En proceso"))`
   - `Tipo_Costo_ID` = `[Tipo_Costo_ID]`
   - `Descripcion` = `[Descripcion]`
   - `Cantidad` = `[Cantidad]`
@@ -822,44 +831,7 @@ Cada ficha lista, de arriba abajo, lo que se completa en el editor (**Actions �
 - **Prueba +:** se verifica con `B_Copiar_Lineas`.
 - **Prueba −:** no aparece en ninguna vista.
 - **Repetición:** no aplica.
-- **Si falla:** comprobar que `Control_Copias` tiene una fila `COPIAS` con `Proforma_Destino_ID` llena.
-
-#### PRO-A16 · `A_Copiar_Control_Set` · Auxiliar
-
-- **Depende de:** —
-- **For a record of this table:** `Control_Copias`
-- **Action name:** `A_Copiar_Control_Set`
-- **Do this:** Data: set the values of some columns in this row
-- **Set these columns:**
-  - `Proforma_Destino_ID` = `[Proforma_ID]`
-  - `Proforma_Origen_ID` = `[Copiar_Desde_ID]`
-  - `Estado` = `"En proceso"`
-  - `Creado_En` = `NOW()`
-- **Only if this condition is true:** (dejar vacío)
-- **Needs confirmation?:** No
-- **Position:** Hide
-- **Idempotencia:** establecer los mismos valores dos veces no cambia nada.
-- **Prueba +:** se verifica con `A_Copiar_Planificacion_Conceptos`.
-- **Prueba −:** no aparece en ninguna vista.
-- **Repetición:** no aplica.
-- **Si falla:** el bot `B_Copiar_Lineas` no se dispara porque `Estado` no pasa a `En proceso`.
-
-#### PRO-A17 · `A_Copiar_Control_Limpiar` · Auxiliar
-
-- **Depende de:** —
-- **For a record of this table:** `Control_Copias`
-- **Action name:** `A_Copiar_Control_Limpiar`
-- **Do this:** Data: set the values of some columns in this row
-- **Set these columns:**
-  - `Estado` = `"Libre"`
-- **Only if this condition is true:** (dejar vacío)
-- **Needs confirmation?:** No
-- **Position:** Hide
-- **Idempotencia:** poner `Libre` cuando ya es `Libre` no cambia nada.
-- **Prueba +:** se verifica con `B_Copiar_Lineas`.
-- **Prueba −:** no aparece en ninguna vista.
-- **Repetición:** no aplica.
-- **Si falla:** `Control_Copias.Estado` queda en `En proceso` y bloquea copias posteriores.
+- **Si falla:** comprobar que `Control_Copias` tiene una solicitud `En proceso` con `Proforma_Destino_ID` llena.
 
 ---
 
@@ -878,7 +850,7 @@ Los bots viven en **Automation → Bots** (⚠ V15). Todos se crean en esta app;
 | OBR-B01 | `B_Log_Obra_Creada` | Cambio de datos | `Obras` | Escribe `OBRA_CREADA` y avisa por push y correo |
 | PRO-B05 | `B_Copiar_Lineas` | Cambio de datos | `Control_Copias` | Copia conceptos y planificación desde la proforma origen a la destino |
 
-Orden de construcción: `A_Vencer_Log` y `A_Vencer_Set` antes de `B_Proformas_Vencidas`; `A_Copiar_Control_Set`, `A_Copiar_Control_Limpiar`, `A_Copiar_Concepto` y `A_Copiar_Planificacion` antes de `B_Copiar_Lineas`.
+Orden de construcción: `A_Vencer_Log` y `A_Vencer_Set` antes de `B_Proformas_Vencidas`; `A_Copiar_Concepto` y `A_Copiar_Planificacion` antes de `B_Copiar_Lineas`; `B_Copiar_Lineas` antes de `A_Copiar_Planificacion_Conceptos`.
 
 #### PRO-B01 · `B_Proformas_Vencidas` · Bot programado
 
@@ -1042,9 +1014,9 @@ Orden de construcción: `A_Vencer_Log` y `A_Vencer_Set` antes de `B_Proformas_Ve
 - **Event:**
   - Event type: Data change
   - Table: `Control_Copias`
-  - Data change type: Updates only
+  - Data change type: Adds only
   - Condition: `[Estado]="En proceso"`
-- **Depende de:** `A_Copiar_Concepto` (PRO-A14), `A_Copiar_Planificacion` (PRO-A15), `A_Copiar_Control_Limpiar` (PRO-A17)
+- **Depende de:** `A_Copiar_Concepto` (PRO-A14), `A_Copiar_Planificacion` (PRO-A15)
 - **Process:**
   1. Step type: Run a data action → Execute an action on a set of rows
      - Referenced Table: `Proforma_Conceptos`
@@ -1056,15 +1028,15 @@ Orden de construcción: `A_Vencer_Log` y `A_Vencer_Set` antes de `B_Proformas_Ve
      - Referenced Action: `A_Copiar_Planificacion`
   3. Step type: Run a data action → Set row values
      - Table: (esta fila)
-     - `Estado` = `"Libre"`
-  - Nota: el bot se dispara cuando `A_Copiar_Control_Set` deja `Control_Copias.Estado` en `"En proceso"`. No activar *Trigger other bots*: el tercer paso ya devuelve el estado a `Libre`.
-- **Datos que escribe:** filas nuevas en `Proforma_Conceptos` y `Proforma_Planificacion` ligadas a `Proforma_Destino_ID`; `Control_Copias.Estado` vuelve a `Libre`.
-- **Idempotencia:** cada ejecución copia todas las líneas del origen al destino y deja `Estado = "Libre"`. Si la corrida se corta antes del paso 3, `Estado` queda en `En proceso` y la siguiente corrida del bot vuelve a copiar (las claves son únicas, no hay duplicados lógicos).
-- **Límites del plan Core:** una ejecución por cambio de `Control_Copias` a `En proceso`. Dos pasos `Execute an action on a set of rows`: uno por conceptos y otro por planificación.
-- **Prueba +:** en un `Borrador` con `Copiar_Desde_ID` lleno y origen con líneas: al pulsar `A_Copiar_Planificacion_Conceptos`, el bot copia los conceptos y la planificación al destino y `Control_Copias.Estado` vuelve a `Libre`.
-- **Prueba −:** si `Control_Copias.Estado` no es `En proceso`, el bot no se dispara. Si el origen no tiene líneas, no se copia nada y el estado vuelve a `Libre`.
+     - `Estado` = `"Procesada"`
+  - Nota: el bot se dispara cuando `A_Copiar_Planificacion_Conceptos` agrega la solicitud con `Estado = "En proceso"`. `A_Copiar_Concepto` y `A_Copiar_Planificacion` toman el destino de la única solicitud `En proceso`; por eso `A_Copiar_Planificacion_Conceptos` no se ofrece mientras haya otra. No activar *Trigger other bots*.
+- **Datos que escribe:** filas nuevas en `Proforma_Conceptos` y `Proforma_Planificacion` ligadas a `Proforma_Destino_ID`; la solicitud pasa a `Procesada`.
+- **Idempotencia:** cada ejecución copia todas las líneas del origen al destino y deja la solicitud `Procesada`. Si la corrida se corta antes del paso 3 la solicitud queda `En proceso` y bloquea nuevas copias; el bot no se reintenta solo, y reintentarlo a mano duplica las líneas ya copiadas (las claves nuevas son distintas).
+- **Límites del plan Core:** una ejecución por solicitud nueva. Dos pasos `Execute an action on a set of rows`: uno por conceptos y otro por planificación.
+- **Prueba +:** en un `Borrador` con `Copiar_Desde_ID` lleno y origen con líneas: al pulsar `A_Copiar_Planificacion_Conceptos`, el bot copia los conceptos y la planificación al destino y la solicitud queda `Procesada`.
+- **Prueba −:** si la solicitud no nace `En proceso`, el bot no se dispara. Si el origen no tiene líneas, no se copia nada y la solicitud queda `Procesada`.
 - **Repetición:** se puede ejecutar varias veces; cada una agrega las líneas del origen al destino.
-- **Si falla:** si `Estado` queda en `En proceso`, revisar `Monitor` de `B_Copiar_Lineas`. Para desbloquear, poner `Estado = "Libre"` a mano en `OXYData` o ejecutar `A_Copiar_Control_Limpiar`.
+- **Si falla:** si una solicitud queda `En proceso`, revisar `Monitor` de `B_Copiar_Lineas` y comprobar en el destino qué líneas se copiaron. Para desbloquear, poner `Estado = "Procesada"` a mano en `OXYData`.
 
 ---
 
@@ -1132,10 +1104,10 @@ Cuentas de prueba: una por rol de la app (`Super`, `Administracion`, `Supervisor
 | PR-17 | `Planificacion` | En una proforma `Enviada`: agregar un concepto y una línea de planificación nuevos, pulsar `A_Generar_PDF` y subir un `Doc_Proforma_Personalizado` | Las líneas se guardan; el nuevo PDF aparece como `Doc_Proforma` con los montos corregidos y el personalizado se guarda; el estado sigue `Enviada`; en una `Aceptada` ninguna de las tres cosas es posible (⚠ V29) |
 | PR-15 | `Planificacion` | Borrar un concepto y una línea de planificación de un `Borrador` | Las líneas desaparecen; `Precio_Neto` y `Costo_Planificado` se recalculan; hay que volver a generar el PDF antes de enviar |
 | PR-14 | `Administracion` | Con una proforma `Enviada` y obra creada a mano, usar `A_Aceptar_Completar`; con una `Aceptada` sin obra, usar `A_Aceptar_Reparar_Obra` | Una sola obra por proforma; ninguna acción duplica |
-| PR-18 | `Planificacion` | Proforma destino `Borrador` con líneas propias; origen con conceptos y planificación; ejecutar `A_Copiar_Planificacion_Conceptos` | Se agregan las líneas del origen al destino; el `Orden` de las del origen se conserva; las del destino mantienen las suyas |
+| PR-18 | `Planificacion` | Proforma destino `Borrador` con líneas propias; origen con conceptos y planificación; ejecutar `A_Copiar_Planificacion_Conceptos` | Se agregan las líneas del origen al destino; `Orden` se copia tal cual; las del destino mantienen las suyas |
 | PR-19 | `Planificacion` | Proforma destino `Enviada` con `Copiar_Desde_ID` lleno | El botón de copia no aparece (solo `Borrador`) |
 | PR-20 | `Planificacion` | Proforma destino `Borrador` con `Copiar_Desde_ID` igual a su propio ID | El botón no aparece (`Valid if` rechaza) |
-| PR-21 | `Planificacion` | Dos usuarios copian desde la misma origen al mismo tiempo | La segunda copia espera: `Control_Copias.Estado = "En proceso"` bloquea hasta que la primera termine y vuelve a `Libre` |
+| PR-21 | `Planificacion` | Dos usuarios copian desde la misma origen al mismo tiempo | La segunda copia espera: mientras exista una solicitud `En proceso` en `Control_Copias` el botón no aparece; reaparece cuando el bot la pasa a `Procesada` |
 
 ---
 
@@ -1146,7 +1118,7 @@ La app está terminada cuando:
 - [ ] Las trece tablas de 3.1 están con los permisos indicados (incluidos los borrados de conceptos y planificación) y sin columnas virtuales en `Obras`.
 - [ ] La configuración de columnas de 3.3, los slices de 3.4 y 3.6 y las acciones de sistema de 3.5 están aplicados.
 - [ ] Las siete vistas del menú y las de detalle y formulario de la sección 4 existen y abren sin errores.
-- [ ] Las acciones `A_Enviar` a `A_Vencer_Set` y `A_Copiar_Planificacion_Conceptos` a `A_Copiar_Control_Limpiar`, y los bots `B_Proformas_Vencidas`, `B_Proforma_PDF`, `B_Log_Proformas`, `B_Notif_Proformas`, `B_Log_Obra_Creada` y `B_Copiar_Lineas` guardan sin errores en el editor.
+- [ ] Las acciones `A_Enviar` a `A_Vencer_Set` y `A_Copiar_Planificacion_Conceptos` a `A_Copiar_Planificacion`, y los bots `B_Proformas_Vencidas`, `B_Proforma_PDF`, `B_Log_Proformas`, `B_Notif_Proformas`, `B_Log_Obra_Creada` y `B_Copiar_Lineas` guardan sin errores en el editor.
 - [ ] Cada acción de usuario lleva la expresión de rol de 2.3 en su `Only if`.
 - [ ] Las pruebas PR-1 a PR-21 se ejecutaron con resultado registrado.
 - [ ] `V_Control_Obras`, `V_Control_PDF` y `V_Control_Copias` quedan vacías con los datos de prueba.
@@ -1162,7 +1134,7 @@ La app está terminada cuando:
 | P-02 | `Obras.Responsable_ID`: ¿obligatorio para iniciar? | La columna ya no es requerida (se crea en blanco). Se define en el documento de OXY Gestión si `A_Iniciar` exige responsable |
 | P-03 | Agregar vs reemplazar líneas | Decidido: agregar. Las líneas existentes del destino se mantienen; las copiadas se suman. |
 | P-04 | Estados permitidos | Decidido: solo `Borrador`. |
-| P-05 | Numeración de `Orden` | Decidido: conserva el `Orden` original con desplazamiento si hay conflicto. |
+| P-05 | Numeración de `Orden` | Decidido: se copia el `Orden` original tal cual, sin desplazamiento; `Orden` no es único y solo ordena la impresión. |
 
 **Validaciones nuevas de esta app** (se agregan al registro de la arquitectura):
 

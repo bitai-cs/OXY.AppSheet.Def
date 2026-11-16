@@ -4,6 +4,35 @@ Este documento es el único lugar donde se registran los cambios de los document
 
 ---
 
+## Condición y mensaje de PRO-A13 — 14 de noviembre de 2026
+
+**Motivo:** simplificar la condición de `A_Copiar_Planificacion_Conceptos` y usar la referencia directa a `Copiar_Desde_ID` en el mensaje de confirmación.
+
+| Dónde | Cambio |
+|---|---|
+| `OXY_App_Proformas_Especificacion`, 5 (PRO-A13) | *Only if this condition is true*: se quitan las comprobaciones de existencia y de estado `Z-Eliminada` del origen (las cubre el `Valid if` de `Copiar_Desde_ID`). *Confirmation Message*: usa `[Copiar_Desde_ID].[Numero]`. Nota y *Prueba −* ajustadas |
+| Este historial | Entrada nueva |
+
+---
+
+## Corrección del diseño de copia de planificación y conceptos — 14 de noviembre de 2026
+
+**Motivo:** la definición de PRO-A13 a PRO-A17 y PRO-B05 no era factible: el grupo `A_Copiar_Planificacion_Conceptos` (tabla `Proformas`) llamaba a una acción de `Control_Copias`, que además usaba columnas de `Proformas`; no había bloqueo real de copias simultáneas y la idempotencia del bot estaba mal descrita. `Control_Copias` pasa de fila única a tabla de solicitudes.
+
+| Dónde | Cambio |
+|---|---|
+| `OXY_App_Proformas_Especificacion`, 3.1, 3.2, 3.3, 3.5 | `Control_Copias` es una tabla de solicitudes (una fila por copia): columnas `Copia_ID`, `Proforma_Destino_ID`, `Proforma_Origen_ID`, `Estado` (`En proceso`/`Procesada`), `Creado_En`, `Creado_Por`; sin fila inicial |
+| `OXY_App_Proformas_Especificacion`, 5 | PRO-A13 pasa a ser una acción simple que agrega la solicitud en `Control_Copias`, con bloqueo (no aparece si hay una `En proceso`) y mensaje de confirmación corregido; PRO-A14 y PRO-A15 toman el destino de la solicitud `En proceso`; se eliminan PRO-A16 y PRO-A17 |
+| `OXY_App_Proformas_Especificacion`, 6 | PRO-B05: evento *Adds only*; el paso 3 deja la solicitud en `Procesada`; idempotencia y recuperación corregidas (reintentar duplica líneas) |
+| `OXY_App_Proformas_Especificacion`, 10 y 12 | PR-18 y PR-21 ajustadas; P-05: `Orden` se copia tal cual, sin desplazamiento |
+| `OXY_DataModel_Especificacion` | Sección `Control_Copias`, relaciones y nota de `Proformas` |
+| `OXY_AppSheet_Arquitectura_y_Seguridad`, 6, 7.2 y DA-10 | Tabla de solicitudes; acciones PRO-A16 y PRO-A17 fuera del reparto; `Orden` tal cual |
+| `Pendientes` | 4.13: pasos de retoma ajustados |
+| `OXYData` | Respaldo previo `OXYData_20261114_1910`. `Control_Copias`: `Control_ID` pasa a `Copia_ID`, columna `Creado_Por` nueva, fila `COPIAS` borrada. `_Diccionario`: filas de `Control_Copias` actualizadas |
+| Este historial | Entrada nueva |
+
+---
+
 ## El repositorio pasa a control de versiones con Git — 13 de noviembre de 2026
 
 **Motivo:** los nombres de archivo ya no llevan número de versión; Git guarda el historial de cada archivo. La carpeta de versiones anteriores se elimina del repositorio y el historial sigue siendo la única fuente de resumen de cambios.
